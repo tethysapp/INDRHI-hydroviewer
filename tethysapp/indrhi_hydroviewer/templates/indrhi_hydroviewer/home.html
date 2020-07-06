@@ -34,8 +34,8 @@
           <div id="station-info" class="col-md-8"></div>
           <div class="col-md-4">
             <div align="right">
-              <img class="obslogos" src="{% static 'hydroviewer_somalia/images/byu_logo.png' %}">
-              <img class="obslogos" src="{% static 'hydroviewer_somalia/images/indrhi.png' %}">
+              <img class="obslogos" src="{% static 'indrhi_hydroviewer/images/byu_logo.png' %}">
+              <img class="obslogos" src="{% static 'indrhi_hydroviewer/images/indrhi.png' %}">
             </div>
           </div>
           <div id="interaction"></div>
@@ -59,7 +59,7 @@
                 <div id="dates" class="hidden form-group" style="padding: 30px 30px 20px 0">
                   <select id="datesSelect" class="form-control"></select>
                 </div>
-                <div class="flex-container-row"><img id="forecast-loading" class="view-file hidden" src="{% static 'hydroviewer_somalia/images/loader.gif' %}" /></div>
+                <div class="flex-container-row"><img id="forecast-loading" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
                 <div id="forecast-chart"></div>
                 <div id="mytable"></div>
               </div>
@@ -68,7 +68,7 @@
           <div role="tabpanel" class="tab-pane" id="historical">
             <div class="panel panel-default">
               <div class="panel-body">
-                <div class="flex-container-row"><img id="historical-loading" class="view-file hidden" src="{% static 'hydroviewer_somalia/images/loader.gif' %}" /></div>
+                <div class="flex-container-row"><img id="historical-loading" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
                 <div id="historical-chart"></div>
               </div>
             </div>
@@ -76,7 +76,7 @@
           <div role="tabpanel" class="tab-pane" id="fdc">
             <div class="panel panel-default">
               <div class="panel-body">
-                <div class="flex-container-row"><img id="fdc-loading" class="view-file hidden" src="{% static 'hydroviewer_somalia/images/loader.gif' %}" /></div>
+                <div class="flex-container-row"><img id="fdc-loading" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
                 <div id="fdc-chart"></div>
               </div>
             </div>
@@ -84,7 +84,7 @@
           <div role="tabpanel" class="tab-pane" id="dailyAverages">
             <div class="panel panel-default">
               <div class="panel-body">
-                <div class="flex-container-row"><img id="dailyAverages-loading" class="view-file hidden" src="{% static 'hydroviewer_somalia/images/loader.gif' %}" /></div>
+                <div class="flex-container-row"><img id="dailyAverages-loading" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
                 <div id="dailyAverages-chart"></div>
               </div>
             </div>
@@ -92,7 +92,7 @@
           <div role="tabpanel" class="tab-pane" id="monthlyAverages">
             <div class="panel panel-default">
               <div class="panel-body">
-                <div class="flex-container-row"><img id="monthlyAverages-loading" class="view-file hidden" src="{% static 'hydroviewer_somalia/images/loader.gif' %}" /></div>
+                <div class="flex-container-row"><img id="monthlyAverages-loading" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
                 <div id="monthlyAverages-chart"></div>
               </div>
             </div>
@@ -150,9 +150,5 @@
 {% endblock %}
 
 {% block app_actions %}
-  {% gizmo save_button %}
-  {% gizmo edit_button %}
-  {% gizmo remove_button %}
-  {% gizmo previous_button %}
-  {% gizmo next_button %}
+
 {% endblock %}
