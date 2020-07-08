@@ -70,6 +70,10 @@ class IndrhiHydroviewer(TethysAppBase):
                 name='forecastpercent',
                 url='forecastpercent',
                 controller='indrhi_hydroviewer.controllers.forecastpercent'),
+            UrlMap(
+                name='getStationMOD',
+                url='getStationMOD',
+                controller='indrhi_hydroviewer.controllers.getStationMOD'),
         )
 
         return url_maps

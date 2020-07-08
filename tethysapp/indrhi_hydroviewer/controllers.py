@@ -6,6 +6,7 @@ import pandas as pd
 import requests
 import json
 import ast
+import csv
 import numpy as np
 import datetime as dt
 import plotly.graph_objs as go
@@ -17,6 +18,11 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pprint
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+from .app import IndrhiHydroviewer
+import os
+from tethys_sdk.workspaces import app_workspace
+
+
 
 
 def home(request):
@@ -418,3 +424,41 @@ def get_forecast_data_csv(request):
     except Exception as e:
         print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
+
+
+@app_workspace
+def getStationMOD(request,app_workspace):
+    responseObject={}
+    stationID = request.GET['id']
+    idNew = stationID.encode('latin1').decode('utf8')+".csv"
+    print(idNew)
+    filePath=os.path.join(app_workspace.path,idNew)
+    print(filePath)
+    count=0
+    datesCSVArray=[]
+    prevRArray= []
+    prev1Array=[]
+    prevAArray=[]
+    minScnFutArray=[]
+    maxScnFutArray=[]
+    with open(filePath, newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True)
+        for row in spamreader:
+            count = count+1
+            if count >6:
+                datesCSVArray.append(row[0])
+                prevRArray.append(row[1])
+                prev1Array.append(row[2])
+                prevAArray.append(row[3])
+                minScnFutArray.append(row[4])
+                maxScnFutArray.append(row[5])
+
+    responseObject['dates'] = datesCSVArray
+    responseObject['prevR'] = prevRArray
+    responseObject['prev1'] = prev1Array
+    responseObject['prevA'] = prevAArray
+    responseObject['min'] = minScnFutArray
+    responseObject['max'] = maxScnFutArray
+
+    print(responseObject)
+    return JsonResponse(responseObject)
