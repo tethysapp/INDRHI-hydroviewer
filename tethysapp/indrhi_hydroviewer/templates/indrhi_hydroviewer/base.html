@@ -13,6 +13,89 @@
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
 {% block app_navigation_items %}
+<br>
+<h4><b>Legend</b></h4>
+<h7><b>MHH MOD OPERA</b></h7>
+<br>
+<br>
+<div class="blockFlex">
+<p class="titleblock"><b>Show Watersheds</b></p>
+  <input id="showMHHlayer" type="checkbox" checked data-toggle="toggle" data-on="<span class='glyphicon glyphicon-qrcode'></span>" data-off="<span class='glyphicon glyphicon-qrcode'></span>" data-size="small" data-onstyle = "success"></input>
+</div>
+
+<div class="blockFlex">
+<p class="titleblock"><b>Show Stations</b></p>
+  <input id="showStationMHHlayer" type="checkbox" checked data-toggle="toggle" data-on="<span class='glyphicon glyphicon-tint'></span>" data-off="<span class='glyphicon glyphicon-tint'></span>" data-size="small" data-onstyle = "success"></input>
+</div>
+
+<div id="ffgs-legend" class="col-sm-12">
+    <h7><b>Flash Flood Guidance System</b></h7>
+    <div>
+        <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff00ff" fill="#ff00ff" stroke-width="2" />
+        </svg>
+        0mm to 25mm
+    </div>
+    <div>
+        <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ff0000" fill="#ff0000" stroke-width="2" />
+        </svg>
+        25mm to 50mm
+    </div>
+    <div>
+        <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ffff00" fill="#ffff00" stroke-width="2" />
+        </svg>
+        50mm to 100mm
+    </div>
+    <div>
+        <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0 0, 20 0, 20 20,0 20" stroke="#00ffff" fill="#00ffff" stroke-width="2" />
+        </svg>
+        100mm to 300mm
+    </div>
+    <div>
+        <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0 0, 20 0, 20 20,0 20" stroke="#ffffff" fill="#ffffff" stroke-width="2" />
+        </svg>
+        No Data Available
+    </div>
+    <br>
+    <p>Change FFG Layer Transparency</p>
+    <input id="slider" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
+    <div class="flex-container-row"><img id="onamet-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
+
+</div>
+<div id="onamet-legend" class="col-sm-12">
+    <h7><p id="onamet_title" class="hidden"><b>Uploaded Shapefile Data</b></h7></p>
+    <p id="onamet_transparency" class="hidden">Change Shapefile Lyr Transparency</p>
+    <input id="ONAMETslider" class="hidden" type="range" min="0" max="1" step="0.1" value="1" oninput="mapLayers.setOpacity(this.value)">
+</div>
+
+<div id="stations-legend" class="col-sm-12">
+    <h7><p id="stations_title" class="hidden"><b>Stations</b></h7></p>
+    <p id="stations_transparency" class="hidden">Change Stations Transparency</p>
+    <input id="stations_slider" class="hidden" type="range" min="0" max="1" step="0.1" value="1" oninput="StationsLayerVectorLayer.setOpacity(this.value)">
+</div>
+
+<div id="map-view-legend" class="map-view-legend ol-unselectable ol-control">
+    <div id="wmslegend0" hidden>
+        <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=AccRainEGE&amp;format=image/png&amp;STYLE=default" />
+    </div>
+    <div id="wmslegend1" hidden>
+        <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt50&amp;format=image/png&amp;STYLE=default" />
+    </div>
+    <div id="wmslegend2" hidden>
+        <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt150&amp;format=image/png&amp;STYLE=default" />
+    </div>
+    <div id="wmslegend3" hidden>
+        <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt300&amp;format=image/png&amp;STYLE=default" />
+    </div>
+</div>
+
+
+
+
 
 {% endblock %}
 
@@ -26,6 +109,7 @@
   {{ block.super }}
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
   <link href="{% static 'indrhi_hydroviewer/css/main.css' %}" rel="stylesheet"/>
 {% endblock %}
 
@@ -35,5 +119,6 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
   <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
   <script src="{% static 'indrhi_hydroviewer/js/main.js' %}" type="text/javascript"></script>
 {% endblock %}

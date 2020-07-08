@@ -10,6 +10,20 @@
   height: auto;
 } */
 
+.blockFlex{
+  display: flex;
+  width: 100%;
+  margin-bottom: 5%;
+}
+.titleblock{
+  flex: 1 1 50%;
+  width: 100%;
+}
+#showMHHlayer{
+  flex: 1 1 50%;
+  width: 100%;
+
+}
 #headerCustomButtons {
     margin-right: 15px;
     margin-left: 15px;
@@ -38,11 +52,11 @@
     height: 100%;
 }
 
-#obsgraph {
+#obsgraph, #obsgraphStations {
     height: 100%;
 }
 
-#obsgraph .modal-body {
+#obsgraph .modal-body, #obsgraphStations .modal-body {
   height: 100%;
   border-radius: 0;
 }

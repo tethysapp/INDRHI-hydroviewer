@@ -9,6 +9,11 @@ var m_downloaded_historical_streamflow = false;
 const glofasURL = `http://globalfloods-ows.ecmwf.int/glofas-ows/ows.py`
 
 
+//Global Variables //
+let layerDict={}
+let ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
+
+
 function init_map() {
 
 	var base_layer = new ol.layer.Tile({
@@ -67,6 +72,8 @@ function init_map() {
       crossOrigin: 'Anonymous',
     })
   });
+
+
   let nod_Q = new ol.layer.Image({
     source: new ol.source.ImageWMS({
       url: 'https://geoserver.hydroshare.org/geoserver/wms',
@@ -76,6 +83,8 @@ function init_map() {
     })
   });
 
+  layerDict['watersheds_MHH']=watersheds_MOD;
+  layerDict['nod_Q']= nod_Q;
 	// var accRainEGE = new ol.layer.Tile({
 	// 		source: new ol.source.TileWMS({
 	// 				url: glofasURL,
@@ -117,7 +126,7 @@ function init_map() {
 
 	map = new ol.Map({
 		target: 'map',
-		layers: [base_layer, streams, stations, wmsLayerCatchment,nod_Q],
+		layers: [base_layer, streams, stations,wmsLayerCatchment, watersheds_MOD, nod_Q],
 		// layers: [base_layer, stations, wmsLayerCatchment, watersheds_MOD,nod_Q],
 		view: new ol.View({
 			center: ol.proj.fromLonLat([-70.789505, 19.042818]),
@@ -127,7 +136,36 @@ function init_map() {
 
 }
 
-let ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabilities';
+// SWITCH TO SHOW THE WATERSHED MHH//
+function modSwitchWatershedMHH(){
+  let actual_state=$(this).prop('checked');
+  if(actual_state){
+    map.addLayer( layerDict['watersheds_MHH']);
+    map.updateSize();
+
+  }
+  else{
+    map.removeLayer(layerDict['watersheds_MHH']);
+    map.updateSize();
+  }
+}
+$('#showMHHlayer').change(modSwitchWatershedMHH);
+
+// SWITCH TO SHOW THE STATIONS//
+function modSwitchStationsMHH(){
+  let actual_state=$(this).prop('checked');
+  if(actual_state){
+    map.addLayer( layerDict['nod_Q']);
+    map.updateSize();
+
+  }
+  else{
+    map.removeLayer(layerDict['nod_Q']);
+    map.updateSize();
+  }
+}
+$('#showStationMHHlayer').change(modSwitchStationsMHH);
+
 
 let capabilities = $.ajax(ajax_url, {
 	type: 'GET',
@@ -525,7 +563,7 @@ function stationData(idStation,commid){
 
           Plotly.newPlot('stationData-chart', data);
           //resize main graph
-          Plotly.Plots.resize($("stationData-chart .js-plotly-plot")[0]);
+          // Plotly.Plots.resize($("stationData-chart .js-plotly-plot")[0]);
 
          }
 
@@ -607,19 +645,20 @@ function map_events() {
       var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' });
 
       if (wms_url) {
-        $("#obsgraph").modal('show');
+        $("#obsgraphStations").modal('show');
         $("#tbody").empty()
-        $('#forecast-chart').addClass('hidden');
-        $('#historical-chart').addClass('hidden');
-        $('#fdc-chart').addClass('hidden');
-        $('#dailyAverages-chart').addClass('hidden');
-        $('#monthlyAverages-chart').addClass('hidden');
-        $('#forecast-loading').removeClass('hidden');
-        $('#historical-loading').removeClass('hidden');
-        $('#fdc-loading').removeClass('hidden');
-        $("#station-info").empty()
-        $('#download_forecast').addClass('hidden');
-                $('#download_historical').addClass('hidden');
+        $('#stationData-chart').addClass('hidden');
+        // $('#forecast-chart').addClass('hidden');
+        // $('#historical-chart').addClass('hidden');
+        // $('#fdc-chart').addClass('hidden');
+        // $('#dailyAverages-chart').addClass('hidden');
+        // $('#monthlyAverages-chart').addClass('hidden');
+        // $('#forecast-loading').removeClass('hidden');
+        // $('#historical-loading').removeClass('hidden');
+        // $('#fdc-loading').removeClass('hidden');
+        // $("#station-info").empty()
+        // $('#download_forecast').addClass('hidden');
+        //         $('#download_historical').addClass('hidden');
 
         $.ajax({
           type: "GET",
