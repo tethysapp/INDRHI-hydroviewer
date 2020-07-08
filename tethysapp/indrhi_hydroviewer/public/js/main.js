@@ -57,6 +57,25 @@ function init_map() {
 		})
 	});
 
+  // Add the resources of the layer display //
+  //Model MOOD
+  let watersheds_MOD = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://geoserver.hydroshare.org/geoserver/wms',
+      params: { 'LAYERS': 'HS-0a4ef3190ba14e04a09768eb91e2c23f:cuencas_r' },
+      serverType: 'geoserver',
+      crossOrigin: 'Anonymous',
+    })
+  });
+  let nod_Q = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://geoserver.hydroshare.org/geoserver/wms',
+      params: { 'LAYERS': 'HS-0a4ef3190ba14e04a09768eb91e2c23f:NOD_1_CA' },
+      serverType: 'geoserver',
+      crossOrigin: 'Anonymous',
+    })
+  });
+
 	// var accRainEGE = new ol.layer.Tile({
 	// 		source: new ol.source.TileWMS({
 	// 				url: glofasURL,
@@ -94,10 +113,12 @@ function init_map() {
 	// 		visible: false
 	// })
 	feature_layer = streams;
+	feature_layer2 = nod_Q;
 
 	map = new ol.Map({
 		target: 'map',
-		layers: [base_layer, streams, stations, wmsLayerCatchment],
+		layers: [base_layer, streams, stations, wmsLayerCatchment,nod_Q],
+		// layers: [base_layer, stations, wmsLayerCatchment, watersheds_MOD,nod_Q],
 		view: new ol.View({
 			center: ol.proj.fromLonLat([-70.789505, 19.042818]),
 			zoom: 8
@@ -119,7 +140,8 @@ let capabilities = $.ajax(ajax_url, {
 	success: function() {
 		let x = capabilities.responseText
 		.split('<FeatureTypeList>')[1]
-		.split('HS-cc1b93f1d65440aca895787118ed46f1:SomoliaPoints')[1]
+		// .split('HS-cc1b93f1d65440aca895787118ed46f1:SomoliaPoints')[1]
+		.split('HS-0a4ef3190ba14e04a09768eb91e2c23f:Nod_Q')[1]
 		.split('LatLongBoundingBox ')[1]
 		.split('/></FeatureType>')[0];
 
@@ -139,7 +161,8 @@ let capabilities = $.ajax(ajax_url, {
 	}
 });
 
-function get_available_dates(comid) {
+// function get_available_dates(comid) {
+function get_available_dates(comid,watershed,subbasin,startdate) {
 	$.ajax({
 		type: 'GET',
 		url: 'get-available-dates/',
@@ -170,7 +193,8 @@ function get_available_dates(comid) {
     });
 }
 
-function get_time_series(comid) {
+// function get_time_series(comid) {
+function get_time_series(comid,watershed,subbasin,startdate) {
     $('#forecast-loading').removeClass('hidden');
     $('#forecast-chart').addClass('hidden');
     $('#dates').addClass('hidden');
@@ -227,7 +251,8 @@ function get_time_series(comid) {
     });
 }
 
-function get_historic_data(comid) {
+// function get_historic_data(comid) {
+function get_historic_data(comid,watershed,subbasin,startdate) {
 	$('#historical-loading').removeClass('hidden');
 	m_downloaded_historical_streamflow = true;
     $.ajax({
@@ -256,7 +281,7 @@ function get_historic_data(comid) {
                 Plotly.Plots.resize($("#historical-chart .js-plotly-plot")[0]);
 
                 var params = {
-                    watershed: watershed,
+                  watershed: watershed,
                 	subbasin: subbasin,
                 	comid: comid,
                 	daily: false
@@ -406,7 +431,8 @@ function get_monthlyAverages (comid) {
                 //resize main graph
                 Plotly.Plots.resize($("#monthlyAverages-chart .js-plotly-plot")[0]);
 
-           		 } else if (data.error) {
+           		 }
+               else if (data.error) {
            		 	$('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the Data</strong></p>');
            		 	$('#info').removeClass('hidden');
 
@@ -420,6 +446,95 @@ function get_monthlyAverages (comid) {
     });
 };
 
+function removeInvalid(arrayTest){
+  let arrayResponse = [];
+  arrayTest.forEach(function(x){
+    if(x > 0){
+      arrayResponse.push(x);
+    }
+    else{
+      arrayResponse.push(undefined);
+    }
+  })
+  return arrayResponse;
+
+}
+function formatDates(arrayDates){
+  let arrayResponse=[];
+  arrayDates.forEach(function(x){
+    let firstPart = x.split(" ");
+    let joinPart = firstPart[0].split("/");
+    let joinPartConverted = [joinPart[2],joinPart[1],joinPart[0]].join('-');
+    let finalString = [joinPartConverted, firstPart[1]].join(' ');
+    arrayResponse.push(finalString);
+  })
+  return arrayResponse;
+}
+function stationData(idStation,commid){
+  $.ajax({
+    type: "GET",
+    url: 'getStationMOD',
+    dataType: 'json',
+    data:{
+      'id':idStation,
+      'commid':commid
+    },
+    success: function (result) {
+      if (!result.error) {
+          console.log(result);
+
+          $('#stationData-loading').addClass('hidden');
+          // $('#dates').removeClass('hidden');
+//                $('#obsdates').removeClass('hidden');
+          $loading.addClass('hidden');
+          $('#stationData-chart').removeClass('hidden');
+          var prev1Trace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['prev1']),
+            type: 'scatter',
+            name:'Prev_1'
+          };
+
+          var prevATrace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['prevA']),
+            type: 'scatter',
+            name:'Prev_A'
+          };
+          var prevRTrace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['prevR']),
+            type: 'scatter',
+            name:'Prev_R'
+          };
+          var maxTrace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['max']),
+            type: 'scatter',
+            name:'Max_Scns_Fut'
+          };
+          var minTrace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['min']),
+            type: 'scatter',
+            name:'Min_Scns_Fut'
+
+          };
+
+          var data = [prev1Trace,prevATrace,prevRTrace,maxTrace,minTrace];
+
+          Plotly.newPlot('stationData-chart', data);
+          //resize main graph
+          Plotly.Plots.resize($("stationData-chart .js-plotly-plot")[0]);
+
+         }
+
+    }
+  });
+
+
+}
+
 function map_events() {
 	map.on('pointermove', function(evt) {
 		if (evt.dragging) {
@@ -427,7 +542,7 @@ function map_events() {
 		}
 		var pixel = map.getEventPixel(evt.originalEvent);
 		var hit = map.forEachLayerAtPixel(pixel, function(layer) {
-			if (layer == feature_layer) {
+			if (layer == feature_layer || layer == feature_layer2 ) {
 				current_layer = layer;
 				return true;
 			}
@@ -437,7 +552,7 @@ function map_events() {
 
 	map.on("singleclick", function(evt) {
 
-		if (map.getTargetElement().style.cursor == "pointer") {
+		if (map.getTargetElement().style.cursor == "pointer" && current_layer ===feature_layer) {
 
 			var view = map.getView();
 			var viewResolution = view.getResolution();
@@ -467,20 +582,77 @@ function map_events() {
 						var watershed = result["features"][0]["properties"]["watershed"];
 		         		var subbasin = result["features"][0]["properties"]["subbasin"];
 		         		var comid = result["features"][0]["properties"]["COMID"];
+                console.log(comid);
+                console.log(watershed);
+                console.log(subbasin);
 		         		$("#station-info").append('<h3 id="Current-Watershed-Tab">Current Watershed: '+ watershed
                         			+ '</h3><h5 id="Subbasin-Name-Tab">Subbasin Name: '
                         			+ subbasin + '</h3><h5 id="COMID-Tab">Station COMID: '
                         			+ comid+ '</h5><h5>Country: '+ 'Dominican Republic');
-                        get_time_series(comid);
-                        get_historic_data(comid);
-                        get_flow_duration_curve(comid);
-                        get_forecast_percent(comid);
-                        get_dailyAverages(comid);
-                        get_monthlyAverages(comid);
+
+                        get_time_series(comid,watershed,subbasin,startdate);
+                        get_historic_data(comid,watershed,subbasin,startdate);
+                        get_flow_duration_curve(comid,watershed,subbasin,startdate);
+                        get_forecast_percent(comid,watershed,subbasin,startdate);
+                        get_dailyAverages(comid,watershed,subbasin,startdate);
+                        get_monthlyAverages(comid,watershed,subbasin,startdate);
                     }
                 });
             }
 		}
+    if (map.getTargetElement().style.cursor == "pointer" && current_layer ===feature_layer2) {
+
+      var view = map.getView();
+      var viewResolution = view.getResolution();
+      var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' });
+
+      if (wms_url) {
+        $("#obsgraph").modal('show');
+        $("#tbody").empty()
+        $('#forecast-chart').addClass('hidden');
+        $('#historical-chart').addClass('hidden');
+        $('#fdc-chart').addClass('hidden');
+        $('#dailyAverages-chart').addClass('hidden');
+        $('#monthlyAverages-chart').addClass('hidden');
+        $('#forecast-loading').removeClass('hidden');
+        $('#historical-loading').removeClass('hidden');
+        $('#fdc-loading').removeClass('hidden');
+        $("#station-info").empty()
+        $('#download_forecast').addClass('hidden');
+                $('#download_historical').addClass('hidden');
+
+        $.ajax({
+          type: "GET",
+          url: wms_url,
+          dataType: 'json',
+          success: function (result) {
+            console.log("this is the results");
+            console.log(result);
+            var stationID = result["features"][0]["properties"]["id"]
+            var stationCommid = result["features"][0]["properties"]["COMID"]
+            stationData(stationID,stationCommid)
+            // var startdate = '';
+            // var watershed = result["features"][0]["properties"]["watershed"];
+            //     var subbasin = result["features"][0]["properties"]["subbasin"];
+            //     var comid = result["features"][0]["properties"]["COMID"];
+            //     console.log(comid);
+            //     console.log(watershed);
+            //     console.log(subbasin);
+            //     $("#station-info").append('<h3 id="Current-Watershed-Tab">Current Watershed: '+ watershed
+            //                   + '</h3><h5 id="Subbasin-Name-Tab">Subbasin Name: '
+            //                   + subbasin + '</h3><h5 id="COMID-Tab">Station COMID: '
+            //                   + comid+ '</h5><h5>Country: '+ 'Dominican Republic');
+            //
+            //             get_time_series(comid,watershed,subbasin,startdate);
+            //             get_historic_data(comid,watershed,subbasin,startdate);
+            //             get_flow_duration_curve(comid,watershed,subbasin,startdate);
+            //             get_forecast_percent(comid,watershed,subbasin,startdate);
+            //             get_dailyAverages(comid,watershed,subbasin,startdate);
+            //             get_monthlyAverages(comid,watershed,subbasin,startdate);
+                    }
+                });
+            }
+    }
 
 	});
 }
@@ -505,11 +677,17 @@ function resize_graphs() {
     $("#monthlyAverages_tab_link").click(function() {
     	Plotly.Plots.resize($("#monthlyAverages-chart .js-plotly-plot")[0]);
     });
+    $("#monthlyAverages_tab_link").click(function() {
+    	Plotly.Plots.resize($("#monthlyAverages-chart .js-plotly-plot")[0]);
+    });
+    $("#stationData_tab_link").click(function() {
+    	Plotly.Plots.resize($("#stationData-chart .js-plotly-plot")[0]);
+    });
 };
 
 $(function() {
-	$("#app-content-wrapper").removeClass('show-nav');
-	$(".toggle-nav").removeClass('toggle-nav');
+	// $("#app-content-wrapper").removeClass('show-nav');
+	// $(".toggle-nav").removeClass('toggle-nav');
 
 	//make sure active Plotly plots resize on window resize
     window.onresize = function() {
@@ -527,6 +705,8 @@ $(function() {
         console.log(sel_val[0])
         var startdate = sel_val[0];
         var watershed = sel_val[1];
+        console.log("problem");
+        console.log(watershed);
         var subbasin = sel_val[2];
         var comid = sel_val[3];
         $('#forecast-loading').removeClass('hidden');
