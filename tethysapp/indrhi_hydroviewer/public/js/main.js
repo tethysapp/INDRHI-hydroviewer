@@ -16,6 +16,43 @@ let ajax_url = 'https://geoserver.hydroshare.org/geoserver/wfs?request=GetCapabi
 
 function init_map() {
 
+  let AccRainEGELayer = new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+          url: glofasURL,
+          params: { LAYERS: 'AccRainEGE', TILED: true },
+          serverType: 'mapserver'
+          // crossOrigin: 'Anonymous'
+      }),
+      // visible: false
+  });
+  let EGE_probRgt50Layer = new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+          url: glofasURL,
+          params: { LAYERS: 'EGE_probRgt50', TILED: true },
+          serverType: 'mapserver'
+          // crossOrigin: 'Anonymous'
+      }),
+      // visible: false
+  });
+  let EGE_probRgt150Layer= new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+          url: glofasURL,
+          params: { LAYERS: 'EGE_probRgt150', TILED: true },
+          serverType: 'mapserver'
+          // crossOrigin: 'Anonymous'
+      }),
+      // visible: false
+  });
+  let EGE_probRgt300Layer = new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+          url: glofasURL,
+          params: { LAYERS: 'EGE_probRgt300', TILED: true },
+          serverType: 'mapserver'
+          // crossOrigin: 'Anonymous'
+      }),
+      // visible: false
+  })
+
 	var base_layer = new ol.layer.Tile({
 		source: new ol.source.BingMaps({
 			key: 'eLVu8tDRPeQqmBlKAjcw~82nOqZJe2EpKmqd-kQrSmg~AocUZ43djJ-hMBHQdYDyMbT-Enfsk0mtUIGws1WeDuOvjY4EXCH-9OK3edNLDgkc',
@@ -32,15 +69,15 @@ function init_map() {
 		}),
 		opacity: 1
 	});
-	var layerNameCatchment = 'hispaniola_hydroviewer:ffgs_basin_view'
-	wmsLayerCatchment = new ol.layer.Tile({
+	var layerNameCatchment = 'ffgs:ffgs_hispaniola'
+	var wmsLayerCatchment = new ol.layer.Tile({
 			source: new ol.source.TileWMS({
 					url: 'https://tethys2.byu.edu/geoserver/wms',
-					params: { LAYERS: layerNameCatchment },
+					params: { 'LAYERS': layerNameCatchment },
 					serverType: 'geoserver',
 					crossOrigin: 'Anonymous'
 			}),
-			opacity: 0.7
+			opacity: 0.5
 	});
 
 		var major_rivers = new ol.layer.Image({
@@ -85,42 +122,9 @@ function init_map() {
 
   layerDict['watersheds_MHH']=watersheds_MOD;
   layerDict['nod_Q']= nod_Q;
-	// var accRainEGE = new ol.layer.Tile({
-	// 		source: new ol.source.TileWMS({
-	// 				url: glofasURL,
-	// 				params: { LAYERS: 'AccRainEGE', TILED: true },
-	// 				serverType: 'mapserver'
-	// 				// crossOrigin: 'Anonymous'
-	// 		}),
-	// 		visible: false
-	// })
-	// var eGE_probRgt50 = new ol.layer.Tile({
-	// 		source: new ol.source.TileWMS({
-	// 				url: glofasURL,
-	// 				params: { LAYERS: 'EGE_probRgt50', TILED: true },
-	// 				serverType: 'mapserver'
-	// 				// crossOrigin: 'Anonymous'
-	// 		}),
-	// 		visible: false
-	// })
-	// new ol.layer.Tile({
-	// 		source: new ol.source.TileWMS({
-	// 				url: glofasURL,
-	// 				params: { LAYERS: 'EGE_probRgt150', TILED: true },
-	// 				serverType: 'mapserver'
-	// 				// crossOrigin: 'Anonymous'
-	// 		}),
-	// 		visible: false
-	// }),
-	// new ol.layer.Tile({
-	// 		source: new ol.source.TileWMS({
-	// 				url: glofasURL,
-	// 				params: { LAYERS: 'EGE_probRgt300', TILED: true },
-	// 				serverType: 'mapserver'
-	// 				// crossOrigin: 'Anonymous'
-	// 		}),
-	// 		visible: false
-	// })
+  layerDict['wmsLayerCatchment'] = wmsLayerCatchment;
+  layerDict['streams'] = streams;
+
 	feature_layer = streams;
 	feature_layer2 = nod_Q;
 
@@ -165,6 +169,36 @@ function modSwitchStationsMHH(){
   }
 }
 $('#showStationMHHlayer').change(modSwitchStationsMHH);
+
+// SWITCH TO SHOW THE WMS stations//
+function modSwitchWmsCatchment(){
+  let actual_state=$(this).prop('checked');
+  if(actual_state){
+    map.addLayer( layerDict['wmsLayerCatchment']);
+    map.updateSize();
+
+  }
+  else{
+    map.removeLayer(layerDict['wmsLayerCatchment']);
+    map.updateSize();
+  }
+}
+
+$('#ffs').change(modSwitchWmsCatchment);
+// SWITCH TO SHOW THE WMS stations//
+function modSwitchStreams(){
+  let actual_state=$(this).prop('checked');
+  if(actual_state){
+    map.addLayer( layerDict['streams']);
+    map.updateSize();
+
+  }
+  else{
+    map.removeLayer(layerDict['streams']);
+    map.updateSize();
+  }
+}
+$('#geo').change(modSwitchStreams);
 
 
 let capabilities = $.ajax(ajax_url, {
