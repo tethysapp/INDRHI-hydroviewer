@@ -432,7 +432,9 @@ def getStationMOD(request,app_workspace):
     stationID = request.GET['id']
     idNew = stationID.encode('latin1').decode('utf8')+".csv"
     print(idNew)
-    filePath=os.path.join(app_workspace.path,idNew)
+    folderPath=os.path.join(app_workspace.path,"Nod_Q")
+    # filePath=os.path.join(app_workspace.path,idNew)
+    filePath=os.path.join(folderPath,idNew)
     print(filePath)
     count=0
     datesCSVArray=[]
@@ -459,6 +461,44 @@ def getStationMOD(request,app_workspace):
     responseObject['prevA'] = prevAArray
     responseObject['min'] = minScnFutArray
     responseObject['max'] = maxScnFutArray
+
+    print(responseObject)
+    return JsonResponse(responseObject)
+
+@app_workspace
+def getStationMODsim(request,app_workspace):
+    responseObject={}
+    stationID = request.GET['id']
+    idNew = stationID.encode('latin1').decode('utf8')+".csv"
+    print(idNew)
+    folderPath=os.path.join(app_workspace.path,"Nod_sim")
+    # filePath=os.path.join(app_workspace.path,idNew)
+    filePath=os.path.join(folderPath,idNew)
+    print(filePath)
+    count=0
+    datesCSVArray=[]
+    CalibraArray= []
+    HumArray=[]
+    SecoArray=[]
+    NormalArray=[]
+    Z1Array = []
+    with open(filePath, newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True)
+        for row in spamreader:
+            count = count+1
+            if count >6:
+                datesCSVArray.append(row[0])
+                NormalArray.append(row[1])
+                SecoArray.append(row[2])
+                HumArray.append(row[3])
+                Z1Array.append(row[4])
+
+
+    responseObject['dates'] = datesCSVArray
+    responseObject['Lento_EHA-Normal'] =NormalArray
+    responseObject['Lento_EHA-Seco'] = SecoArray
+    responseObject['Rap_EHA-Hum'] = HumArray
+    responseObject['Calibra_Z1'] = Z1Array
 
     print(responseObject)
     return JsonResponse(responseObject)

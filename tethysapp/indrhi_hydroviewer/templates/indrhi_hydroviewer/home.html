@@ -145,7 +145,8 @@
       <div class="modal-body">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation" class="active"><a id ="stablink" href="#stationData" aria-controls="stationData" role="tab" data-toggle="tab">Station Data</a></li>
+          <li role="presentation" class="active"><a id ="stab" href="#stationData" aria-controls="stationData" role="tab" data-toggle="tab">Station Data</a></li>
+          <li role="presentation"><a id ="stab2" href="#stationData2" aria-controls="stationData2" role="tab" data-toggle="tab">Station Data</a></li>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -154,7 +155,15 @@
             <div class="panel panel-default">
               <div class="panel-body">
                 <div class="flex-container-row"><img id="sloading" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
-                <div id="schart"></div>
+                <div id="sgraph"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane active" id="stationData2">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="sloading2" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
+                <div id="sgraph2"></div>
               </div>
             </div>
           </div>

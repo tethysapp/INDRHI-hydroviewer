@@ -576,7 +576,7 @@ function stationData(idStation,commid){
           $('#sloading').addClass('hidden');
 
           // $loading.addClass('hidden');
-          $('#schart').removeClass('hidden');
+          $('#sgraph').removeClass('hidden');
 
           var prev1Trace = {
             x: formatDates(result['dates']),
@@ -614,18 +614,73 @@ function stationData(idStation,commid){
           var data = [prev1Trace,prevATrace,prevRTrace,maxTrace,minTrace];
           var config = {responsive: true}
           // Plotly.newPlot('uploadTab', data);
-          Plotly.newPlot('schart', data, config);
+          Plotly.newPlot('sgraph', data, config);
           //resize main graph
-          let divVar = $("#schart .js-plotly-plot");
-          console.log(divVar);
-          Plotly.Plots.resize();
+          let divVar = $("#sgraph .js-plotly-plot");
+          console.log(divVar[0]);
+          Plotly.Plots.resize($("#sgraph")[0]);
 
          }
 
     }
   });
+}
+function stationData2(idStation,commid){
+  console.log("stationData");
+  $.ajax({
+    type: "GET",
+    url: 'getStationMODsim',
+    dataType: 'json',
+    data:{
+      'id':idStation,
+      'commid':commid
+    },
+    success: function (result) {
+      if (!result.error) {
+          console.log(result);
 
+          $('#sloading2').addClass('hidden');
 
+          // $loading.addClass('hidden');
+          $('#sgraph2').removeClass('hidden');
+
+          var prev1Trace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['Lento_EHA-Normal']),
+            type: 'scatter',
+            name:'Prev_1'
+          };
+
+          var prevATrace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['Lento_EHA-Seco']),
+            type: 'scatter',
+            name:'Prev_A'
+          };
+          var prevRTrace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['Rap_EHA-Hum']),
+            type: 'scatter',
+            name:'Prev_R'
+          };
+          var maxTrace = {
+            x: formatDates(result['dates']),
+            y: removeInvalid(result['Calibra_Z1']),
+            type: 'scatter',
+            name:'Max_Scns_Fut'
+          };
+
+          var data = [prev1Trace,prevATrace,prevRTrace,maxTrace];
+          var config = {responsive: true}
+          // Plotly.newPlot('uploadTab', data);
+          Plotly.newPlot('sgraph2', data, config);
+          //resize main graph
+          Plotly.Plots.resize($("#sgraph2")[0]);
+
+         }
+
+    }
+  });
 }
 
 function map_events() {
@@ -702,8 +757,9 @@ function map_events() {
         console.log("limpiame");
         $("#obsgraphStations").modal('show');
         // $("#myModal").modal('show');
-        $('#schart').addClass('hidden');
+        $('#sgraph').addClass('hidden');
         $('#sloading').removeClass('hidden');
+        $('#sgraph2').addClass('hidden');
         $("#sinfo").empty();
 
         $.ajax({
@@ -720,6 +776,7 @@ function map_events() {
                           + '</h3><h5 id="COMID-Tab">Station COMID: '
                           + stationCommid+ '</h5><h5>Country: '+ 'Dominican Republic');
             stationData(stationID,stationCommid);
+            stationData2(stationID,stationCommid);
 
             }
         });
@@ -752,9 +809,10 @@ function resize_graphs() {
     $("#monthlyAverages_tab_link").click(function() {
     	Plotly.Plots.resize($("#monthlyAverages-chart .js-plotly-plot")[0]);
     });
-    $("#stablink").click(function() {
-    	Plotly.Plots.resize($("#schart .js-plotly-plot")[0]);
+    $("#stab").click(function() {
+    	Plotly.Plots.resize($("#sgraph")[0]);
     });
+
 };
 
 $(function() {

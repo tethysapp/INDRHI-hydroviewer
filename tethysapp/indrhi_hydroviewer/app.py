@@ -74,6 +74,10 @@ class IndrhiHydroviewer(TethysAppBase):
                 name='getStationMOD',
                 url='getStationMOD',
                 controller='indrhi_hydroviewer.controllers.getStationMOD'),
+            UrlMap(
+                name='getStationMODsim',
+                url='getStationMODsim',
+                controller='indrhi_hydroviewer.controllers.getStationMODsim'),
         )
 
         return url_maps
