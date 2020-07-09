@@ -14,6 +14,7 @@
 
 {% block app_navigation_items %}
 <br>
+
 <h4><b>Control Panel</b></h4>
 <h7><b>MHH MOD OPERA</b></h7>
 <br>
@@ -24,7 +25,7 @@
 </div>
 
 <p>Change Watershed Transparency</p>
-<input id="slider" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
+<input id="sliderWatershedMHH" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
 
 <div class="blockFlex">
   <p class="titleblock"><b>Show Stations</b></p>
@@ -32,7 +33,7 @@
 </div>
 
 <p>Change Stations Transparency</p>
-<input id="slider2" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
+<input id="sliderStationsMHH" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
 
 <h7><b>Flash Flood Sytem (FFS)</b></h7>
 <br>
@@ -41,9 +42,11 @@
   <p class="titleblock"><b> Show FFS Watersheds</b></p>
   <input id="ffs" type="checkbox" checked data-toggle="toggle" data-on="<span class='glyphicon glyphicon-qrcode'></span>" data-off="<span class='glyphicon glyphicon-qrcode'></span>" data-size="small" data-onstyle = "success"></input>
 </div>
+
 <p>Change FFS watersheds Transparency</p>
-<input id="slider" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
+<input id="sliderFSSWatersheds" type="range" min="0" max="1" step="0.1" value="1">
 <br>
+
 <div id="ffgs-legend" class="col-sm-12">
     <div>
         <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -89,10 +92,11 @@
   <p class="titleblock"><b> Show Streams Layers</b></p>
   <input id="geo" type="checkbox" checked data-toggle="toggle" data-on="<span class='glyphicon glyphicon-random'></span>" data-off="<span class='glyphicon glyphicon-random'></span>" data-size="small" data-onstyle = "success"></input>
 </div>
-<p>Stream Transparency</p>
-<input id="slider" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
-<div class="flex-container-row"><img id="onamet-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
 
+<p>Stream Transparency</p>
+<input id="sliderStreams" type="range" min="0" max="1" step="0.1" value="1">
+
+<div class="flex-container-row"><img id="onamet-view-file-loading" class="view-file hidden" src="{% static base_name|add:'/images/loader.gif' %}" /></div>
 <div id="onamet-legend" class="col-sm-12">
 
     <h7><p id="onamet_title" class="hidden"><b>Uploaded Shapefile Data</b></h7>
