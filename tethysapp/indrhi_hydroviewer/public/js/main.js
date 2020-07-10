@@ -648,26 +648,26 @@ function stationData2(idStation,commid){
             x: formatDates(result['dates']),
             y: removeInvalid(result['Lento_EHA-Normal']),
             type: 'scatter',
-            name:'Prev_1'
+            name:'Lento_EHA-Normal'
           };
 
           var prevATrace = {
             x: formatDates(result['dates']),
             y: removeInvalid(result['Lento_EHA-Seco']),
             type: 'scatter',
-            name:'Prev_A'
+            name:'Lento_EHA-Seco'
           };
           var prevRTrace = {
             x: formatDates(result['dates']),
             y: removeInvalid(result['Rap_EHA-Hum']),
             type: 'scatter',
-            name:'Prev_R'
+            name:'Rap_EHA-Hum'
           };
           var maxTrace = {
             x: formatDates(result['dates']),
             y: removeInvalid(result['Calibra_Z1']),
             type: 'scatter',
-            name:'Max_Scns_Fut'
+            name:'Calibra_Z1'
           };
 
           var data = [prev1Trace,prevATrace,prevRTrace,maxTrace];
