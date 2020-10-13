@@ -14,10 +14,10 @@ requirements:
       - numpy
       - plotly
       - geoglows
-      - gspread
-      - oauth2client
-      - pydrive
 
   pip:
+    - gspread
+    - oauth2client
+    - pydrive
 
 post:
