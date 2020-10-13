@@ -8,7 +8,16 @@ requirements:
   skip: false
   conda:
     channels:
+      - conda-forge
     packages:
+      - pandas
+      - numpy
+      - plotly
+      - geoglows
+      - gspread
+      - oauth2client
+      - pprint
+      - pydrive
 
   pip:
 

@@ -759,6 +759,7 @@ function map_events() {
         // $("#myModal").modal('show');
         $('#sgraph').addClass('hidden');
         $('#sloading').removeClass('hidden');
+        $('#sloading2').removeClass('hidden');
         $('#sgraph2').addClass('hidden');
         $("#sinfo").empty();
 
@@ -811,6 +812,9 @@ function resize_graphs() {
     });
     $("#stab").click(function() {
     	Plotly.Plots.resize($("#sgraph")[0]);
+    });
+    $("#stab2").click(function() {
+    	Plotly.Plots.resize($("#sgraph2")[0]);
     });
 
 };
