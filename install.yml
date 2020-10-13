@@ -16,7 +16,6 @@ requirements:
       - geoglows
       - gspread
       - oauth2client
-      - pprint
       - pydrive
 
   pip:
