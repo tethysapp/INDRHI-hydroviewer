@@ -436,14 +436,14 @@ def retrieve_model_helper(station_id,watershed_name):
     try:
         first_time = True
         for model_single in MODELS:
-            URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single + ".csv"
+            URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single +  ".csv"
             # print(URL)
             df = pd.read_csv(URL, skiprows=[0,1]).reset_index(drop=True)
             rows_qu = df.shape[0]
             col_qu = df.shape[1]
             # print(df.columns)
             # print(station_id)
-            values = df[f'{station_id.upper()}'].iloc[3:rows_qu].tolist()
+            values = df[station_id].iloc[3:rows_qu].tolist()
             if first_time is True:
                 timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
                 return_obj['timestamps'] = timestamps
@@ -457,42 +457,107 @@ def retrieve_model_helper(station_id,watershed_name):
         return return_obj
     except Exception as e:
         print("THE ERROR",e)
-    # try:
-    #     first_time = True
-    #     for model_single in MODELS:
-    #         URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single+"_in" + ".csv"
-    #         print(URL)
-    #         df = pd.read_csv(URL, skiprows=[0,1]).reset_index(drop=True)
-    #         rows_qu = df.shape[0]
-    #         col_qu = df.shape[1]
-    #         print(df.columns)
-    #         # print(station_id)
-    #         values = df[f'{station_id.upper()}'].iloc[3:rows_qu].tolist()
-    #         if first_time is True:
-    #             timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
-    #             return_obj['timestamps'] = timestamps
-    #             first_time = False
-    #         dat_in = f'fmodel_single'+'_in'
-    #         return_obj[dat_in] = values
-    #         # print(values)
-    #         # print(timestamps)
-    #     # print(df)
-    #     # print(return_obj)
-    #     return return_obj
-    # except Exception as e:
-    #     print("THE ERROR",e)
+
 def retrieve_models(request):
 
     return_obj = {}
     try:
         stationID = request.GET['id']
         idNew = stationID.encode('latin1').decode('utf8')
+        idNew  = idNew.upper()
         return_obj = retrieve_model_helper(idNew, "YaqueNorte")
+    except Exception as e:
+        print(e)
+        return_obj['error'] = "There is an error retrieving the data from the different models, probably the download endpoint change"
+    # print(return_obj)
+    return JsonResponse(return_obj)
+def retrieve_models_in(request):
+
+    return_obj = {}
+    try:
+        stationID = request.GET['id']
+        idNew = stationID.encode('latin1').decode('utf8')
+        idNew  = idNew.upper()
+        return_obj = retrieve_models_helper_in(idNew, "YaqueNorte")
     except Exception as e:
         print(e)
         return_obj['error'] = "There is an error retrieving the data from the different models, probably the download endpoint change"
     print(return_obj)
     return JsonResponse(return_obj)
+
+def retrieve_models_helper_in(station_id, watershed_name):
+    conversor_dict = {
+    'CASTAÑUELAS':'S-CASTAÑUELAS',
+    'R. GUAYUBÍN - YAQUE DEL NORTE':'S-R. GUAYUBÍN - YAQUE DEL NORTE',
+    'EH. PEÑA RANCHADERO':'S-EH. PEÑA RANCHADERO',
+    'R. YAQUE - CANA':'S-R. YAQUE - CANA',
+    'R. CANA - R. YAQUE DEL NORTE':'S-R. CANA - R. YAQUE DEL NORTE',
+    'E. CHACUEY':'S-E. CHACUEY',
+    'EH. PUENTE SAN RAFAEL': 'S-EH. PUENTE SAN RAFAEL',
+    'E. MAGUACA':'S-E. MAGUACA',
+    'R. GUAYUBÍN - AMINILLA':'S-R. GUAYUBÍN - AMINILLA',
+    'R. AMINILLA - R. YANUBÍN': 'S-R. AMINILLA - R. YANUBÍN',
+    'R. AMINA - R. YAQUE DEL NORTE':'S-R. AMINA - R. YAQUE DEL NORTE',
+    'EH. SABANETA':'S-EH. SABANETA',
+    'MAO':'S-MAO',
+    'R. YAGUAJAL - R. GUAYUBÍN': 'S-R. YAGUAJAL - R. GUAYUBÍN',
+    'JAIBÓN':'S-JAIBÓN',
+    'E. MONCIÓN':'S-E. MONCIÓN',
+    'SANTIAGO DE LOS CABALLEROS':'S-SANTIAGO DE LOS CABALLEROS',
+    'E. LÓPEZ ANGOSTURA': 'S-E. LÓPEZ ANGOSTURA',
+    'R. MAGUA - E. MAO': 'S-R. MAGUA - E. MAO',
+    'E. MAO':'S-E. MAO',
+    'E. BAO':'S-E. BAO',
+    'E. TAVERA': 'S-E. TAVERA',
+    'R. GUANAJUMA - E. BAO': 'S-R. GUANAJUMA - E. BAO',
+    'EH. INOA': 'S-EH. INOA',
+    'EH BOMA':'S-EH BOMA',
+    'R. MAO - CENOVI':'S-R. MAO - CENOVI',
+    'EH LOS PILONES':'S-EH LOS PILONES',
+    'R. CENOVI - R. MAO': 'S-R. CENOVI - R. MAO',
+    'EH EL HIGUERO':'S-EH EL HIGUERO',
+    'JARABACOA':'S-JARABACOA',
+    'R. JIMENOA-JARABACOA':'S-R. JIMENOA-JARABACOA',
+    'EH. EL CERRAZO':'S-EH. EL CERRAZO',
+    'EH. MATA GRANDE':'S-EH. MATA GRANDE',
+    'EH. LA FORTALEZA':'S-EH. LA FORTALEZA'
+    }
+    MODELS = [
+        "FFGS-ARW",
+        "FFGS-NMMB",
+        "Sispi-RAIN",
+        "MF-AROME"
+    ]
+    return_obj = {}
+
+    try:
+        first_time = True
+        for model_single in MODELS:
+            URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single+"_in" + ".csv"
+            print(URL)
+            df = pd.read_csv(URL, skiprows=[0,1]).reset_index(drop=True)
+            rows_qu = df.shape[0]
+            col_qu = df.shape[1]
+            # print(df.columns)
+            print(station_id)
+            if station_id in conversor_dict:
+                print("yeahjhhhh")
+            new_in_station_id = conversor_dict[station_id]
+            print(new_in_station_id)
+            values = df[new_in_station_id].iloc[3:rows_qu].tolist()
+            if first_time is True:
+                timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
+                return_obj['timestamps'] = timestamps
+                first_time = False
+            return_obj[model_single] = values
+            print(values)
+            # print(timestamps)
+        # print(df)
+        # print(return_obj)
+        return return_obj
+    except Exception as e:
+        print("THE ERROR",e)
+
 
 @app_workspace
 def getStationMOD(request,app_workspace):

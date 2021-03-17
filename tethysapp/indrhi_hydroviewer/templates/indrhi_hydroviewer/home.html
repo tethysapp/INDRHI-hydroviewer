@@ -148,6 +148,7 @@
           <li role="presentation" class="active"><a id ="stab" href="#stationData" aria-controls="stationData" role="tab" data-toggle="tab">Nod_Q</a></li>
           <li role="presentation"><a id ="stab2" href="#stationData2" aria-controls="stationData2" role="tab" data-toggle="tab">Nod_Sim</a></li>
           <li role="presentation"><a id ="stab3" href="#modelData" aria-controls="modelData" role="tab" data-toggle="tab">EDAPHI MHH</a></li>
+          <li role="presentation"><a id ="stab4" href="#modelDataIn" aria-controls="modelDataIn" role="tab" data-toggle="tab">EDAPHI MHH In</a></li>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -173,6 +174,14 @@
               <div class="panel-body">
                 <div class="flex-container-row"><img id="sloading3" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
                 <div id="sgraph3"></div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="modelDataIn">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="flex-container-row"><img id="sloading4" class="view-file hidden" src="{% static 'indrhi_hydroviewer/images/loader.gif' %}" /></div>
+                <div id="sgraph4"></div>
               </div>
             </div>
           </div>

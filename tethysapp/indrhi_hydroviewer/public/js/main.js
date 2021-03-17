@@ -538,7 +538,7 @@ function get_monthlyAverages (comid) {
 function removeInvalid(arrayTest){
   let arrayResponse = [];
   arrayTest.forEach(function(x){
-    if(x > 0){
+    if(x >= 0){
       arrayResponse.push(x);
     }
     else{
@@ -730,39 +730,74 @@ function modelDataPlots(idStation){
             type: 'scatter',
             name:'MF-AROME'
           };
-          // var prev1Trace_in = {
-          //   x: formatDates(result['timestamps']),
-          //   y: removeInvalid(result['FFGS-ARW_in']),
-          //   type: 'scatter',
-          //   name:'FFGS-ARW_in'
-          // };
-          //
-          // var prevATrace_in = {
-          //   x: formatDates(result['timestamps']),
-          //   y: removeInvalid(result['FFGS-NMMB_in']),
-          //   type: 'scatter',
-          //   name:'FFGS-NMMB_in'
-          // };
-          // var prevRTrace_in = {
-          //   x: formatDates(result['timestamps']),
-          //   y: removeInvalid(result['Sispi-RAIN_in']),
-          //   type: 'scatter',
-          //   name:'Sispi-RAIN_in'
-          // };
-          // var maxTrace_in = {
-          //   x: formatDates(result['timestamps']),
-          //   y: removeInvalid(result['MF-AROME_in']),
-          //   type: 'scatter',
-          //   name:'MF-AROME_in'
-          // };
 
-          // var data = [prev1Trace,prevATrace,prevRTrace,maxTrace,prev1Trace_in,prevATrace_in,prevRTrace_in,maxTrace_in];
           var data = [prev1Trace,prevATrace,prevRTrace,maxTrace];
           var config = {responsive: true}
           // Plotly.newPlot('uploadTab', data);
           Plotly.newPlot('sgraph3', data, config);
           //resize main graph
           Plotly.Plots.resize($("#sgraph3")[0]);
+
+         }
+
+    },
+    error:function(data){
+      console.log("problem");
+      console.log(data)
+    }
+  });
+}
+function modelDataPlotsIn(idStation){
+  $.ajax({
+    type: "GET",
+    url: 'getModelDataIn',
+    dataType: 'json',
+    data:{
+      'id':idStation,
+    },
+
+    success: function (result) {
+
+      if (!result.error) {
+          console.log(result);
+
+          $('#sloading4').addClass('hidden');
+
+          // $loading.addClass('hidden');
+          $('#sgraph4').removeClass('hidden');
+
+          var prev1Trace = {
+            x: formatDates(result['timestamps']),
+            y: removeInvalid(result['FFGS-ARW']),
+            type: 'scatter',
+            name:'FFGS-ARW'
+          };
+
+          var prevATrace = {
+            x: formatDates(result['timestamps']),
+            y: removeInvalid(result['FFGS-NMMB']),
+            type: 'scatter',
+            name:'FFGS-NMMB'
+          };
+          var prevRTrace = {
+            x: formatDates(result['timestamps']),
+            y: removeInvalid(result['Sispi-RAIN']),
+            type: 'scatter',
+            name:'Sispi-RAIN'
+          };
+          var maxTrace = {
+            x: formatDates(result['timestamps']),
+            y: removeInvalid(result['MF-AROME']),
+            type: 'scatter',
+            name:'MF-AROME'
+          };
+
+          var data = [prev1Trace,prevATrace,prevRTrace,maxTrace];
+          var config = {responsive: true}
+          // Plotly.newPlot('uploadTab', data);
+          Plotly.newPlot('sgraph4', data, config);
+          //resize main graph
+          Plotly.Plots.resize($("#sgraph4")[0]);
 
          }
 
@@ -850,8 +885,10 @@ function map_events() {
         $('#sloading').removeClass('hidden');
         $('#sloading2').removeClass('hidden');
         $('#sloading3').removeClass('hidden');
+        $('#sloading4').removeClass('hidden');
         $('#sgraph2').addClass('hidden');
         $('#sgraph3').addClass('hidden');
+        $('#sgraph4').addClass('hidden');
         $("#sinfo").empty();
 
         $.ajax({
@@ -870,6 +907,7 @@ function map_events() {
             stationData(stationID,stationCommid);
             stationData2(stationID,stationCommid);
             modelDataPlots(stationID);
+            modelDataPlotsIn(stationID);
 
             }
         });
@@ -909,7 +947,10 @@ function resize_graphs() {
     	Plotly.Plots.resize($("#sgraph2")[0]);
     });
     $("#stab3").click(function() {
-    	// Plotly.Plots.resize($("#sgraph3")[0]);
+    	Plotly.Plots.resize($("#sgraph3")[0]);
+    });
+    $("#stab4").click(function() {
+    	Plotly.Plots.resize($("#sgraph4")[0]);
     });
 
 };

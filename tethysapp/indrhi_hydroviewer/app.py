@@ -82,6 +82,10 @@ class IndrhiHydroviewer(TethysAppBase):
                 name='getModelData',
                 url='getModelData',
                 controller='indrhi_hydroviewer.controllers.retrieve_models'),
+            UrlMap(
+                name='getModelDataIn',
+                url='getModelDataIn',
+                controller='indrhi_hydroviewer.controllers.retrieve_models_in'),
         )
 
         return url_maps
