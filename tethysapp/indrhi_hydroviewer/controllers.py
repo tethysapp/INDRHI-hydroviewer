@@ -425,17 +425,62 @@ def get_forecast_data_csv(request):
         print(str(e))
         return JsonResponse({'error': 'No forecast data found.'})
 
+def retrieve_model_helper(station_id,watershed_name):
+    MODELS = [
+        "FFGS-ARW",
+        "FFGS-NMMB",
+        "Sispi-RAIN",
+        "MF-AROME"
+    ]
+    return_obj = {}
+    try:
+        first_time = True
+        for model_single in MODELS:
+            URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single + ".csv"
+            print(URL)
+            df = pd.read_csv(URL, skiprows=[0,1])
+            rows_qu = df.shape[0]
+            col_qu = df.shape[1]
+            print(df)
+            print(station_id)
+            values = df['CASTAÑUELAS'].iloc[3:rows_qu].tolist()
+            print("my valiues",values)
+            if first_time is True:
+                timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
+                return_obj['timestamps'] = timestamps
+                first_time = False
+
+            return_obj[model_single] = values
+            # print(values)
+            # print(timestamps)
+        # print(df)
+        print(return_obj)
+        return return_obj
+    except Exception as e:
+        print("THE ERROR",e)
+def retrieve_models(request):
+
+    return_obj = {}
+    try:
+        stationID = request.GET['id']
+        idNew = stationID.encode('latin1').decode('utf8')
+        return_obj = retrieve_model_helper(idNew, "YaqueNorte")
+    except Exception as e:
+        print(e)
+        return_obj['error'] = "There is an error retrieving the data from the different models, probably the download endpoint change"
+    print(return_obj)
+    return JsonResponse(return_obj)
 
 @app_workspace
 def getStationMOD(request,app_workspace):
     responseObject={}
     stationID = request.GET['id']
     idNew = stationID.encode('latin1').decode('utf8')+".csv"
-    print(idNew)
+    # print(idNew)
     folderPath=os.path.join(app_workspace.path,"Nod_Q")
     # filePath=os.path.join(app_workspace.path,idNew)
     filePath=os.path.join(folderPath,idNew)
-    print(filePath)
+    # print(filePath)
     count=0
     datesCSVArray=[]
     prevRArray= []
@@ -462,7 +507,7 @@ def getStationMOD(request,app_workspace):
     responseObject['min'] = minScnFutArray
     responseObject['max'] = maxScnFutArray
 
-    print(responseObject)
+    # print(responseObject)
     return JsonResponse(responseObject)
 
 @app_workspace
@@ -470,11 +515,11 @@ def getStationMODsim(request,app_workspace):
     responseObject={}
     stationID = request.GET['id']
     idNew = stationID.encode('latin1').decode('utf8')+".csv"
-    print(idNew)
+    # print(idNew)
     folderPath=os.path.join(app_workspace.path,"Nod_sim")
     # filePath=os.path.join(app_workspace.path,idNew)
     filePath=os.path.join(folderPath,idNew)
-    print(filePath)
+    # print(filePath)
     count=0
     datesCSVArray=[]
     CalibraArray= []
@@ -500,5 +545,5 @@ def getStationMODsim(request,app_workspace):
     responseObject['Rap_EHA-Hum'] = HumArray
     responseObject['Calibra_Z1'] = Z1Array
 
-    print(responseObject)
+    # print(responseObject)
     return JsonResponse(responseObject)

@@ -78,14 +78,14 @@ function init_map() {
 			}),
 	});
 
-		var major_rivers = new ol.layer.Image({
-		source: new ol.source.ImageWMS({
-			url: 'https://geoserver.hydroshare.org/geoserver/wms',
-			params: { 'LAYERS': 'HS-cc1b93f1d65440aca895787118ed46f1:Jubba_and_Shabelle' },
-			serverType: 'geoserver',
-			crossOrigin: 'Anonymous'
-		}),
-		opacity: 1
+	var major_rivers = new ol.layer.Image({
+  	source: new ol.source.ImageWMS({
+  		url: 'https://geoserver.hydroshare.org/geoserver/wms',
+  		params: { 'LAYERS': 'HS-cc1b93f1d65440aca895787118ed46f1:Jubba_and_Shabelle' },
+  		serverType: 'geoserver',
+  		crossOrigin: 'Anonymous'
+  	}),
+  	opacity: 1
 	});
 
 	var stations = new ol.layer.Image({
@@ -469,7 +469,7 @@ function get_dailyAverages (comid) {
             if (!data.error) {
                 $('#dailyAverages-loading').addClass('hidden');
                 $('#dates').removeClass('hidden');
-//                $('#obsdates').removeClass('hidden');
+                //$('#obsdates').removeClass('hidden');
                 $loading.addClass('hidden');
                 $('#dailyAverages-chart').removeClass('hidden');
                 $('#dailyAverages-chart').html(data['plot']);
@@ -512,7 +512,7 @@ function get_monthlyAverages (comid) {
             if (!data.error) {
                 $('#monthlyAverages-loading').addClass('hidden');
                 $('#dates').removeClass('hidden');
-//                $('#obsdates').removeClass('hidden');
+                //$('#obsdates').removeClass('hidden');
                 $loading.addClass('hidden');
                 $('#monthlyAverages-chart').removeClass('hidden');
                 $('#monthlyAverages-chart').html(data['plot']);
@@ -683,6 +683,70 @@ function stationData2(idStation,commid){
   });
 }
 
+function modelDataPlots(idStation){
+  $.ajax({
+    type: "GET",
+    url: 'getModelData',
+    dataType: 'json',
+    data:{
+      'id':idStation,
+    },
+    // "FFGS-ARW",
+    // "FFGS-NMMB",
+    // "Sispi-RAIN",
+    // "MF-AROME"
+    success: function (result) {
+
+      if (!result.error) {
+          console.log(result);
+
+          $('#sloading3').addClass('hidden');
+
+          // $loading.addClass('hidden');
+          $('#sgraph3').removeClass('hidden');
+
+          var prev1Trace = {
+            x: formatDates(result['timestamps']),
+            y: removeInvalid(result['FFGS-ARW']),
+            type: 'scatter',
+            name:'FFGS-ARW'
+          };
+
+          var prevATrace = {
+            x: formatDates(result['timestamps']),
+            y: removeInvalid(result['FFGS-NMMB']),
+            type: 'scatter',
+            name:'FFGS-NMMB'
+          };
+          var prevRTrace = {
+            x: formatDates(result['timestamps']),
+            y: removeInvalid(result['Sispi-RAIN']),
+            type: 'scatter',
+            name:'Sispi-RAIN'
+          };
+          var maxTrace = {
+            x: formatDates(result['timestamps']),
+            y: removeInvalid(result['MF-AROME']),
+            type: 'scatter',
+            name:'MF-AROME'
+          };
+
+          var data = [prev1Trace,prevATrace,prevRTrace,maxTrace];
+          var config = {responsive: true}
+          // Plotly.newPlot('uploadTab', data);
+          Plotly.newPlot('sgraph3', data, config);
+          //resize main graph
+          Plotly.Plots.resize($("#sgraph3")[0]);
+
+         }
+
+    },
+    error:function(data){
+      console.log("problem");
+      console.log(data)
+    }
+  });
+}
 function map_events() {
 	map.on('pointermove', function(evt) {
 		if (evt.dragging) {
@@ -754,13 +818,14 @@ function map_events() {
       var wms_url = current_layer.getSource().getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(), { 'INFO_FORMAT': 'application/json' });
 
       if (wms_url) {
-        console.log("limpiame");
         $("#obsgraphStations").modal('show');
         // $("#myModal").modal('show');
         $('#sgraph').addClass('hidden');
         $('#sloading').removeClass('hidden');
         $('#sloading2').removeClass('hidden');
+        $('#sloading3').removeClass('hidden');
         $('#sgraph2').addClass('hidden');
+        $('#sgraph3').addClass('hidden');
         $("#sinfo").empty();
 
         $.ajax({
@@ -778,6 +843,7 @@ function map_events() {
                           + stationCommid+ '</h5><h5>Country: '+ 'Dominican Republic');
             stationData(stationID,stationCommid);
             stationData2(stationID,stationCommid);
+            modelDataPlots(stationID);
 
             }
         });
@@ -815,6 +881,9 @@ function resize_graphs() {
     });
     $("#stab2").click(function() {
     	Plotly.Plots.resize($("#sgraph2")[0]);
+    });
+    $("#stab3").click(function() {
+    	// Plotly.Plots.resize($("#sgraph3")[0]);
     });
 
 };
