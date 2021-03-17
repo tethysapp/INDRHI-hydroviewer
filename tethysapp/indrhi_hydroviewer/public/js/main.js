@@ -730,7 +730,33 @@ function modelDataPlots(idStation){
             type: 'scatter',
             name:'MF-AROME'
           };
+          // var prev1Trace_in = {
+          //   x: formatDates(result['timestamps']),
+          //   y: removeInvalid(result['FFGS-ARW_in']),
+          //   type: 'scatter',
+          //   name:'FFGS-ARW_in'
+          // };
+          //
+          // var prevATrace_in = {
+          //   x: formatDates(result['timestamps']),
+          //   y: removeInvalid(result['FFGS-NMMB_in']),
+          //   type: 'scatter',
+          //   name:'FFGS-NMMB_in'
+          // };
+          // var prevRTrace_in = {
+          //   x: formatDates(result['timestamps']),
+          //   y: removeInvalid(result['Sispi-RAIN_in']),
+          //   type: 'scatter',
+          //   name:'Sispi-RAIN_in'
+          // };
+          // var maxTrace_in = {
+          //   x: formatDates(result['timestamps']),
+          //   y: removeInvalid(result['MF-AROME_in']),
+          //   type: 'scatter',
+          //   name:'MF-AROME_in'
+          // };
 
+          // var data = [prev1Trace,prevATrace,prevRTrace,maxTrace,prev1Trace_in,prevATrace_in,prevRTrace_in,maxTrace_in];
           var data = [prev1Trace,prevATrace,prevRTrace,maxTrace];
           var config = {responsive: true}
           // Plotly.newPlot('uploadTab', data);

@@ -437,14 +437,13 @@ def retrieve_model_helper(station_id,watershed_name):
         first_time = True
         for model_single in MODELS:
             URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single + ".csv"
-            print(URL)
-            df = pd.read_csv(URL, skiprows=[0,1])
+            # print(URL)
+            df = pd.read_csv(URL, skiprows=[0,1]).reset_index(drop=True)
             rows_qu = df.shape[0]
             col_qu = df.shape[1]
-            print(df)
-            print(station_id)
-            values = df['CASTAÑUELAS'].iloc[3:rows_qu].tolist()
-            print("my valiues",values)
+            # print(df.columns)
+            # print(station_id)
+            values = df[f'{station_id.upper()}'].iloc[3:rows_qu].tolist()
             if first_time is True:
                 timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
                 return_obj['timestamps'] = timestamps
@@ -454,10 +453,34 @@ def retrieve_model_helper(station_id,watershed_name):
             # print(values)
             # print(timestamps)
         # print(df)
-        print(return_obj)
+        # print(return_obj)
         return return_obj
     except Exception as e:
         print("THE ERROR",e)
+    # try:
+    #     first_time = True
+    #     for model_single in MODELS:
+    #         URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single+"_in" + ".csv"
+    #         print(URL)
+    #         df = pd.read_csv(URL, skiprows=[0,1]).reset_index(drop=True)
+    #         rows_qu = df.shape[0]
+    #         col_qu = df.shape[1]
+    #         print(df.columns)
+    #         # print(station_id)
+    #         values = df[f'{station_id.upper()}'].iloc[3:rows_qu].tolist()
+    #         if first_time is True:
+    #             timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
+    #             return_obj['timestamps'] = timestamps
+    #             first_time = False
+    #         dat_in = f'fmodel_single'+'_in'
+    #         return_obj[dat_in] = values
+    #         # print(values)
+    #         # print(timestamps)
+    #     # print(df)
+    #     # print(return_obj)
+    #     return return_obj
+    # except Exception as e:
+    #     print("THE ERROR",e)
 def retrieve_models(request):
 
     return_obj = {}
