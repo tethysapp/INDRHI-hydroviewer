@@ -71,14 +71,6 @@ class IndrhiHydroviewer(TethysAppBase):
                 url='forecastpercent',
                 controller='indrhi_hydroviewer.controllers.forecastpercent'),
             UrlMap(
-                name='getStationMOD',
-                url='getStationMOD',
-                controller='indrhi_hydroviewer.controllers.getStationMOD'),
-            UrlMap(
-                name='getStationMODsim',
-                url='getStationMODsim',
-                controller='indrhi_hydroviewer.controllers.getStationMODsim'),
-            UrlMap(
                 name='getModelData',
                 url='getModelData',
                 controller='indrhi_hydroviewer.controllers.retrieve_models'),

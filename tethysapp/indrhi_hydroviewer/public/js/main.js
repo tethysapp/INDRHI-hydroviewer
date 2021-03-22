@@ -559,6 +559,7 @@ function formatDates(arrayDates){
   })
   return arrayResponse;
 }
+
 function stationData(idStation,commid){
   console.log("stationData");
   $.ajax({
@@ -625,6 +626,7 @@ function stationData(idStation,commid){
     }
   });
 }
+
 function stationData2(idStation,commid){
   console.log("stationData");
   $.ajax({
@@ -808,6 +810,7 @@ function modelDataPlotsIn(idStation){
     }
   });
 }
+
 function map_events() {
 	map.on('pointermove', function(evt) {
 		if (evt.dragging) {
@@ -881,12 +884,9 @@ function map_events() {
       if (wms_url) {
         $("#obsgraphStations").modal('show');
         // $("#myModal").modal('show');
-        $('#sgraph').addClass('hidden');
-        $('#sloading').removeClass('hidden');
-        $('#sloading2').removeClass('hidden');
+
         $('#sloading3').removeClass('hidden');
         $('#sloading4').removeClass('hidden');
-        $('#sgraph2').addClass('hidden');
         $('#sgraph3').addClass('hidden');
         $('#sgraph4').addClass('hidden');
         $("#sinfo").empty();
@@ -904,8 +904,6 @@ function map_events() {
             $("#sinfo").append('<h3 id="Current-Station-Tab">Current Station: '+ stationID
                           + '</h3><h5 id="COMID-Tab">Station COMID: '
                           + stationCommid+ '</h5><h5>Country: '+ 'Dominican Republic');
-            stationData(stationID,stationCommid);
-            stationData2(stationID,stationCommid);
             modelDataPlots(stationID);
             modelDataPlotsIn(stationID);
 
@@ -916,8 +914,6 @@ function map_events() {
 
 	});
 }
-
-
 
 function resize_graphs() {
     $("#forecast_tab_link").click(function() {
@@ -940,12 +936,7 @@ function resize_graphs() {
     $("#monthlyAverages_tab_link").click(function() {
     	Plotly.Plots.resize($("#monthlyAverages-chart .js-plotly-plot")[0]);
     });
-    $("#stab").click(function() {
-    	Plotly.Plots.resize($("#sgraph")[0]);
-    });
-    $("#stab2").click(function() {
-    	Plotly.Plots.resize($("#sgraph2")[0]);
-    });
+
     $("#stab3").click(function() {
     	Plotly.Plots.resize($("#sgraph3")[0]);
     });

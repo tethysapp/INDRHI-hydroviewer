@@ -144,8 +144,7 @@ def get_return_periods(request):
     return eval(res.content)
 
 
-def get_return_period_ploty_info(request, datetime_start, datetime_end,
-                                 band_alt_max=-9999):
+def get_return_period_ploty_info(request, datetime_start, datetime_end,band_alt_max=-9999):
     """
     Get shapes and annotations for plotly plot
     """
@@ -426,6 +425,12 @@ def get_forecast_data_csv(request):
         return JsonResponse({'error': 'No forecast data found.'})
 
 def retrieve_model_helper(station_id,watershed_name):
+    print(station_id)
+    print(type(station_id))
+    if station_id == 'R. JIMENOA-JARACOBA':
+        station_id = 'R. JIMENOA-JARABACOA'
+    if station_id == 'JARACOBA':
+        station_id = 'JARABACOA'
     MODELS = [
         "FFGS-ARW",
         "FFGS-NMMB",
@@ -486,6 +491,11 @@ def retrieve_models_in(request):
     return JsonResponse(return_obj)
 
 def retrieve_models_helper_in(station_id, watershed_name):
+    print(station_id)
+    if station_id == 'R. JIMENOA-JARACOBA':
+        station_id = 'R. JIMENOA-JARABACOA'
+    if station_id == 'JARACOBA':
+        station_id = 'JARABACOA'
     conversor_dict = {
     'CASTAÑUELAS':'S-CASTAÑUELAS',
     'R. GUAYUBÍN - YAQUE DEL NORTE':'S-R. GUAYUBÍN - YAQUE DEL NORTE',
@@ -557,81 +567,3 @@ def retrieve_models_helper_in(station_id, watershed_name):
         return return_obj
     except Exception as e:
         print("THE ERROR",e)
-
-
-@app_workspace
-def getStationMOD(request,app_workspace):
-    responseObject={}
-    stationID = request.GET['id']
-    idNew = stationID.encode('latin1').decode('utf8')+".csv"
-    # print(idNew)
-    folderPath=os.path.join(app_workspace.path,"Nod_Q")
-    # filePath=os.path.join(app_workspace.path,idNew)
-    filePath=os.path.join(folderPath,idNew)
-    # print(filePath)
-    count=0
-    datesCSVArray=[]
-    prevRArray= []
-    prev1Array=[]
-    prevAArray=[]
-    minScnFutArray=[]
-    maxScnFutArray=[]
-    with open(filePath, newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True)
-        for row in spamreader:
-            count = count+1
-            if count >6:
-                datesCSVArray.append(row[0])
-                prevRArray.append(row[1])
-                prev1Array.append(row[2])
-                prevAArray.append(row[3])
-                minScnFutArray.append(row[4])
-                maxScnFutArray.append(row[5])
-
-    responseObject['dates'] = datesCSVArray
-    responseObject['prevR'] = prevRArray
-    responseObject['prev1'] = prev1Array
-    responseObject['prevA'] = prevAArray
-    responseObject['min'] = minScnFutArray
-    responseObject['max'] = maxScnFutArray
-
-    # print(responseObject)
-    return JsonResponse(responseObject)
-
-@app_workspace
-def getStationMODsim(request,app_workspace):
-    responseObject={}
-    stationID = request.GET['id']
-    idNew = stationID.encode('latin1').decode('utf8')+".csv"
-    # print(idNew)
-    folderPath=os.path.join(app_workspace.path,"Nod_sim")
-    # filePath=os.path.join(app_workspace.path,idNew)
-    filePath=os.path.join(folderPath,idNew)
-    # print(filePath)
-    count=0
-    datesCSVArray=[]
-    CalibraArray= []
-    HumArray=[]
-    SecoArray=[]
-    NormalArray=[]
-    Z1Array = []
-    with open(filePath, newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True)
-        for row in spamreader:
-            count = count+1
-            if count >6:
-                datesCSVArray.append(row[0])
-                NormalArray.append(row[1])
-                SecoArray.append(row[2])
-                HumArray.append(row[3])
-                Z1Array.append(row[4])
-
-
-    responseObject['dates'] = datesCSVArray
-    responseObject['Lento_EHA-Normal'] =NormalArray
-    responseObject['Lento_EHA-Seco'] = SecoArray
-    responseObject['Rap_EHA-Hum'] = HumArray
-    responseObject['Calibra_Z1'] = Z1Array
-
-    # print(responseObject)
-    return JsonResponse(responseObject)
