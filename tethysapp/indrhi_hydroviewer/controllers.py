@@ -335,24 +335,19 @@ def get_historic_data_csv(request):
         subbasin = get_data['subbasin']
         comid = get_data['comid']
 
-        # request_params
-        request_params = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=comid, return_format='csv')
+        era_res2 = geoglows.streamflow.historic_simulation(comid)
+        era_res = era_res2.to_csv()
+        print(era_res2)
 
-        # Token is for the demo account
-        request_headers = dict(Authorization='Token 1adf07d983552705cd86ac681f3717510b6937f6')
-
-        era_res = requests.get('https://tethys2.byu.edu/apps/streamflow-prediction-tool/api/GetHistoricData/',
-                               params=request_params, headers=request_headers)
-
-        era_pairs = era_res.content.splitlines()
+        era_pairs = era_res.splitlines()
         era_pairs.pop(0)
 
         era_dates = []
         era_values = []
 
         for era_pair in era_pairs:
-            era_pair = era_pair.decode('utf-8')
-            era_dates.append(dt.datetime.strptime(era_pair.split(',')[0], '%Y-%m-%d %H:%M:%S'))
+            # era_pair = era_pair.decode('utf-8')
+            era_dates.append(dt.datetime.strptime(era_pair.split(',')[0].split('+')[0], '%Y-%m-%d %H:%M:%S'))
             era_values.append(float(era_pair.split(',')[1]))
 
         pairs = [list(a) for a in zip(era_dates, era_values)]
