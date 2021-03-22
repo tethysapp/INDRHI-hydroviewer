@@ -6,7 +6,7 @@ var map;
 
 let $loading = $('#view-file-loading');
 var m_downloaded_historical_streamflow = false;
-const glofasURL = `http://globalfloods-ows.ecmwf.int/glofas-ows/ows.py`
+// const glofasURL = `http://globalfloods-ows.ecmwf.int/glofas-ows/ows.py`
 
 
 //Global Variables //
@@ -16,42 +16,42 @@ let sliderStreams = document.getElementById('sliderStreams');
 
 function init_map() {
 
-  let AccRainEGELayer = new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-          url: glofasURL,
-          params: { LAYERS: 'AccRainEGE', TILED: true },
-          serverType: 'mapserver'
-          // crossOrigin: 'Anonymous'
-      }),
-      // visible: false
-  });
-  let EGE_probRgt50Layer = new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-          url: glofasURL,
-          params: { LAYERS: 'EGE_probRgt50', TILED: true },
-          serverType: 'mapserver'
-          // crossOrigin: 'Anonymous'
-      }),
-      // visible: false
-  });
-  let EGE_probRgt150Layer= new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-          url: glofasURL,
-          params: { LAYERS: 'EGE_probRgt150', TILED: true },
-          serverType: 'mapserver'
-          // crossOrigin: 'Anonymous'
-      }),
-      // visible: false
-  });
-  let EGE_probRgt300Layer = new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-          url: glofasURL,
-          params: { LAYERS: 'EGE_probRgt300', TILED: true },
-          serverType: 'mapserver'
-          // crossOrigin: 'Anonymous'
-      }),
-      // visible: false
-  })
+  // let AccRainEGELayer = new ol.layer.Tile({
+  //     source: new ol.source.TileWMS({
+  //         url: glofasURL,
+  //         params: { LAYERS: 'AccRainEGE', TILED: true },
+  //         serverType: 'mapserver'
+  //         // crossOrigin: 'Anonymous'
+  //     }),
+  //     // visible: false
+  // });
+  // let EGE_probRgt50Layer = new ol.layer.Tile({
+  //     source: new ol.source.TileWMS({
+  //         url: glofasURL,
+  //         params: { LAYERS: 'EGE_probRgt50', TILED: true },
+  //         serverType: 'mapserver'
+  //         // crossOrigin: 'Anonymous'
+  //     }),
+  //     // visible: false
+  // });
+  // let EGE_probRgt150Layer= new ol.layer.Tile({
+  //     source: new ol.source.TileWMS({
+  //         url: glofasURL,
+  //         params: { LAYERS: 'EGE_probRgt150', TILED: true },
+  //         serverType: 'mapserver'
+  //         // crossOrigin: 'Anonymous'
+  //     }),
+  //     // visible: false
+  // });
+  // let EGE_probRgt300Layer = new ol.layer.Tile({
+  //     source: new ol.source.TileWMS({
+  //         url: glofasURL,
+  //         params: { LAYERS: 'EGE_probRgt300', TILED: true },
+  //         serverType: 'mapserver'
+  //         // crossOrigin: 'Anonymous'
+  //     }),
+  //     // visible: false
+  // })
 
 	var base_layer = new ol.layer.Tile({
 		source: new ol.source.BingMaps({
@@ -99,6 +99,7 @@ function init_map() {
 
   // Add the resources of the layer display //
   //Model MOOD
+
   let watersheds_MOD = new ol.layer.Image({
     source: new ol.source.ImageWMS({
       url: 'https://geoserver.hydroshare.org/geoserver/wms',
@@ -122,6 +123,7 @@ function init_map() {
   layerDict['nod_Q']= nod_Q;
   layerDict['wmsLayerCatchment'] = wmsLayerCatchment;
   layerDict['streams'] = streams;
+  layerDict['base'] = base_layer;
 
 	feature_layer = streams;
 	feature_layer2 = nod_Q;
@@ -137,18 +139,16 @@ function init_map() {
 	});
 
 }
-
+// map.setLayerIndex(base_layer, 1);
 // SWITCH TO SHOW THE WATERSHED MHH//
 function modSwitchWatershedMHH(){
   let actual_state=$(this).prop('checked');
   if(actual_state){
-    map.addLayer( layerDict['watersheds_MHH']);
-    map.updateSize();
+    layerDict['watersheds_MHH'].setOpacity(1);
 
   }
   else{
-    map.removeLayer(layerDict['watersheds_MHH']);
-    map.updateSize();
+    layerDict['watersheds_MHH'].setOpacity(0);
   }
 }
 $('#showMHHlayer').change(modSwitchWatershedMHH);
@@ -157,13 +157,11 @@ $('#showMHHlayer').change(modSwitchWatershedMHH);
 function modSwitchStationsMHH(){
   let actual_state=$(this).prop('checked');
   if(actual_state){
-    map.addLayer( layerDict['nod_Q']);
-    map.updateSize();
+    layerDict['nod_Q'].setOpacity(1);
 
   }
   else{
-    map.removeLayer(layerDict['nod_Q']);
-    map.updateSize();
+    layerDict['nod_Q'].setOpacity(0);
   }
 }
 $('#showStationMHHlayer').change(modSwitchStationsMHH);
@@ -172,13 +170,11 @@ $('#showStationMHHlayer').change(modSwitchStationsMHH);
 function modSwitchWmsCatchment(){
   let actual_state=$(this).prop('checked');
   if(actual_state){
-    map.addLayer( layerDict['wmsLayerCatchment']);
-    map.updateSize();
+    layerDict['wmsLayerCatchment'].setOpacity(1);
 
   }
   else{
-    map.removeLayer(layerDict['wmsLayerCatchment']);
-    map.updateSize();
+    layerDict['wmsLayerCatchment'].setOpacity(0);
   }
 }
 
@@ -187,13 +183,11 @@ $('#ffs').change(modSwitchWmsCatchment);
 function modSwitchStreams(){
   let actual_state=$(this).prop('checked');
   if(actual_state){
-    map.addLayer( layerDict['streams']);
-    map.updateSize();
+    layerDict['streams'].setOpacity(1)
 
   }
   else{
-    map.removeLayer(layerDict['streams']);
-    map.updateSize();
+    layerDict['streams'].setOpacity(0)
   }
 }
 $('#geo').change(modSwitchStreams);
