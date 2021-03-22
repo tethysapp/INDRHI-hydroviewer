@@ -337,7 +337,6 @@ def get_historic_data_csv(request):
 
         era_res2 = geoglows.streamflow.historic_simulation(comid)
         era_res = era_res2.to_csv()
-        print(era_res2)
 
         era_pairs = era_res.splitlines()
         era_pairs.pop(0)
@@ -376,28 +375,19 @@ def get_forecast_data_csv(request):
     get_data = request.GET
 
     try:
-        # model = get_data['model']
         watershed = get_data['watershed_name']
         subbasin = get_data['subbasin_name']
         comid = get_data['comid']
-        if get_data['startdate'] != '':
-            startdate = get_data['startdate']
-        else:
-            startdate = 'most_recent'
+        stats = geoglows.streamflow.forecast_stats(comid)
+        columns_df_final = ['datetime']
+        columns_df = list(stats)
+        columns_af = columns_df_final + columns_df
+        qout_data2 = stats.to_csv()
+        qout_data = qout_data2.splitlines()
 
-        # request_params
-        request_params = dict(watershed_name=watershed, subbasin_name=subbasin, reach_id=comid, return_format='csv')
-
-        # Token is for the demo account
-        request_headers = dict(Authorization='Token 1adf07d983552705cd86ac681f3717510b6937f6')
-
-        res = requests.get('https://tethys2.byu.edu/apps/streamflow-prediction-tool/api/GetAvailableDates/',
-                           params=request_params, headers=request_headers)
-
-        qout_data = res.content.decode('utf-8').splitlines()
         qout_data.pop(0)
 
-        init_time = qout_data[0].split(',')[0].split(' ')[0]
+        init_time = qout_data[0].split(',')[0].split('+')[0]
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=streamflow_forecast_{0}_{1}_{2}_{3}.csv'.format(
             watershed,
@@ -406,9 +396,7 @@ def get_forecast_data_csv(request):
             init_time)
 
         writer = csv_writer(response)
-        writer.writerow(
-            ['datetime', 'high_res (m3/s)', 'max (m3/s)', 'mean (m3/s)', 'min (m3/s)', 'std_dev_range_lower (m3/s)',
-             'std_dev_range_upper (m3/s)'])
+        writer.writerow(columns_af)
 
         for row_data in qout_data:
             writer.writerow(row_data.split(','))
