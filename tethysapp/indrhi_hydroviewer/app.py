@@ -8,7 +8,7 @@ class IndrhiHydroviewer(TethysAppBase):
 
     name = 'Indrhi Hydroviewer'
     index = 'indrhi_hydroviewer:home'
-    icon = 'indrhi_hydroviewer/images/indrhi_logo.png'
+    icon = 'indrhi_hydroviewer/images/indrhi_logo2.png'
     package = 'indrhi_hydroviewer'
     root_url = 'indrhi-hydroviewer'
     color = '#f39c12'
