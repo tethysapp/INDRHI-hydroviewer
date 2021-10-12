@@ -3,6 +3,7 @@ from tethys_sdk.gizmos import PlotlyView
 from django.http import HttpResponse, JsonResponse
 
 import pandas as pd
+import io
 import requests
 import json
 import ast
@@ -408,8 +409,6 @@ def get_forecast_data_csv(request):
         return JsonResponse({'error': 'No forecast data found.'})
 
 def retrieve_model_helper(station_id,watershed_name):
-    print(station_id)
-    print(type(station_id))
     if station_id == 'R. JIMENOA-JARACOBA':
         station_id = 'R. JIMENOA-JARABACOA'
     if station_id == 'JARACOBA':
@@ -424,9 +423,11 @@ def retrieve_model_helper(station_id,watershed_name):
     try:
         first_time = True
         for model_single in MODELS:
-            URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single +  ".csv"
-            # print(URL)
-            df = pd.read_csv(URL, skiprows=[0,1]).reset_index(drop=True)
+            URL="https://sipif.indrhi.gob.do/hidro/mhh/"+ watershed_name +"/Arch/" + model_single +  ".csv"
+            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+            response = requests.get(URL, headers=headers)
+            file_object = io.StringIO(response.content.decode('utf-8'))
+            df = pd.read_csv(file_object, skiprows=[0,1]).reset_index(drop=True)
             rows_qu = df.shape[0]
             col_qu = df.shape[1]
             # print(df.columns)
@@ -440,8 +441,6 @@ def retrieve_model_helper(station_id,watershed_name):
             return_obj[model_single] = values
             # print(values)
             # print(timestamps)
-        # print(df)
-        # print(return_obj)
         return return_obj
     except Exception as e:
         print("THE ERROR",e)
@@ -470,11 +469,9 @@ def retrieve_models_in(request):
     except Exception as e:
         print(e)
         return_obj['error'] = "There is an error retrieving the data from the different models, probably the download endpoint change"
-    print(return_obj)
     return JsonResponse(return_obj)
 
 def retrieve_models_helper_in(station_id, watershed_name):
-    print(station_id)
     if station_id == 'R. JIMENOA-JARACOBA':
         station_id = 'R. JIMENOA-JARABACOA'
     if station_id == 'JARACOBA':
@@ -526,24 +523,23 @@ def retrieve_models_helper_in(station_id, watershed_name):
     try:
         first_time = True
         for model_single in MODELS:
-            URL="https://39700065.servicio-online.net/EDAPHI/RD/MHH/"+ watershed_name +"/Arch/" + model_single+"_in" + ".csv"
-            print(URL)
-            df = pd.read_csv(URL, skiprows=[0,1]).reset_index(drop=True)
+            URL="http://sipif.indrhi.gob.do/hidro/mhh/"+ watershed_name +"/Arch/" + model_single+"_in" + ".csv"
+            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+            response = requests.get(URL, headers=headers)
+            file_object = io.StringIO(response.content.decode('utf-8'))
+            df = pd.read_csv(file_object, skiprows=[0,1]).reset_index(drop=True)
             rows_qu = df.shape[0]
             col_qu = df.shape[1]
             # print(df.columns)
-            print(station_id)
-            if station_id in conversor_dict:
-                print("yeahjhhhh")
+            # if station_id in conversor_dict:
+            #     print("yeahjhhhh")
             new_in_station_id = conversor_dict[station_id]
-            print(new_in_station_id)
             values = df[new_in_station_id].iloc[3:rows_qu].tolist()
             if first_time is True:
                 timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
                 return_obj['timestamps'] = timestamps
                 first_time = False
             return_obj[model_single] = values
-            print(values)
             # print(timestamps)
         # print(df)
         # print(return_obj)
