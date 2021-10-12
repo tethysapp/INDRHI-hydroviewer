@@ -76,6 +76,7 @@ function init_map() {
 					serverType: 'geoserver',
 					crossOrigin: 'Anonymous'
 			}),
+			opacity: 0
 	});
 
 	var major_rivers = new ol.layer.Image({
@@ -106,7 +107,9 @@ function init_map() {
       params: { 'LAYERS': 'HS-0a4ef3190ba14e04a09768eb91e2c23f:cuencas_r' },
       serverType: 'geoserver',
       crossOrigin: 'Anonymous',
-    })
+    }),
+		opacity: 0
+		
   });
 
 
