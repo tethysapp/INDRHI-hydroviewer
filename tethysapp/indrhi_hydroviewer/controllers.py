@@ -415,7 +415,7 @@ def retrieve_model_helper(station_id,watershed_name):
         station_id = 'JARABACOA'
     MODELS = [
         "FFGS-ARW",
-        "FFGS-NMMB",
+        "FFGS-FV3",
         "Sispi-RAIN",
         "MF-AROME"
     ]
@@ -514,7 +514,7 @@ def retrieve_models_helper_in(station_id, watershed_name):
     }
     MODELS = [
         "FFGS-ARW",
-        "FFGS-NMMB",
+        "FFGS-FV3",
         "Sispi-RAIN",
         "MF-AROME"
     ]
