@@ -444,7 +444,9 @@ def retrieve_model_helper(station_id,watershed_name):
         return return_obj
     except Exception as e:
         print("THE ERROR",e)
-        return_obj['error'] = f'{e}'
+        # return_obj['error'] = f'{e}'
+        return_obj['error'] = 'Probably the endpoind has changed'
+
         return return_obj
 
 def retrieve_models(request):
@@ -546,6 +548,5 @@ def retrieve_models_helper_in(station_id, watershed_name):
         return return_obj
     except Exception as e:
         print("THE ERROR",e)
-        return_obj['error'] = f'{e}'
-        
+        return_obj['error'] = 'Probably the endpoind has changed'
         return return_obj
