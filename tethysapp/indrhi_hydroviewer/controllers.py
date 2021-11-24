@@ -444,6 +444,8 @@ def retrieve_model_helper(station_id,watershed_name):
         return return_obj
     except Exception as e:
         print("THE ERROR",e)
+        return_obj['error'] = f'{e}'
+        return return_obj
 
 def retrieve_models(request):
 
@@ -455,7 +457,6 @@ def retrieve_models(request):
         return_obj = retrieve_model_helper(idNew, "YaqueNorte")
     except Exception as e:
         print(e)
-        return_obj['error'] = "There is an error retrieving the data from the different models, probably the download endpoint change"
     # print(return_obj)
     return JsonResponse(return_obj)
 def retrieve_models_in(request):
@@ -468,7 +469,6 @@ def retrieve_models_in(request):
         return_obj = retrieve_models_helper_in(idNew, "YaqueNorte")
     except Exception as e:
         print(e)
-        return_obj['error'] = "There is an error retrieving the data from the different models, probably the download endpoint change"
     return JsonResponse(return_obj)
 
 def retrieve_models_helper_in(station_id, watershed_name):
@@ -546,3 +546,6 @@ def retrieve_models_helper_in(station_id, watershed_name):
         return return_obj
     except Exception as e:
         print("THE ERROR",e)
+        return_obj['error'] = f'{e}'
+        
+        return return_obj
