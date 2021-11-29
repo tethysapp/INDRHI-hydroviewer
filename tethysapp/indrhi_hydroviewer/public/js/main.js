@@ -403,6 +403,14 @@ function get_flow_duration_curve(comid) {
         data: {
             'comid': comid,
         },
+				error: function() {
+            $('#info').html('<p class="alert alert-danger" style="text-align: center"><strong>An unknown error occurred while retrieving the forecast table</strong></p>');
+            $('#info').removeClass('hidden');
+
+            setTimeout(function() {
+                $('#info').addClass('hidden')
+            }, 5000);
+        },
         success: function(data) {
             if (!data.error) {
                 $('#fdc-loading').addClass('hidden');
@@ -771,7 +779,6 @@ function modelDataPlots(idStation){
     },
     error:function(data){
 			$('#sloading3').addClass('hidden');
-
       console.log("problem");
       console.log(data)
     }
