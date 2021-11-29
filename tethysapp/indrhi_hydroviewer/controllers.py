@@ -423,26 +423,28 @@ def retrieve_model_helper(station_id,watershed_name):
     try:
         first_time = True
         for model_single in MODELS:
-            URL="https://sipif.indrhi.gob.do/hidro/mhh/"+ watershed_name +"/Arch/" + model_single +  ".csv"
-            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-            response = requests.get(URL, headers=headers)
-            file_object = io.StringIO(response.content.decode('utf-8'))
-            df = pd.read_csv(file_object, skiprows=[0,1]).reset_index(drop=True)
-            rows_qu = df.shape[0]
-            col_qu = df.shape[1]
-            # print(df.columns)
-            # print(station_id)
-            values = df[station_id].iloc[3:rows_qu].tolist()
-            if first_time is True:
-                timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
-                return_obj['timestamps'] = timestamps
-                first_time = False
+            try:
+                URL="https://sipif.indrhi.gob.do/hidro/mhh/"+ watershed_name +"/Arch/" + model_single +  ".csv"
+                headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+                response = requests.get(URL, headers=headers)
+                file_object = io.StringIO(response.content.decode('utf-8'))
+                df = pd.read_csv(file_object, skiprows=[0,1]).reset_index(drop=True)
+                rows_qu = df.shape[0]
+                col_qu = df.shape[1]
+                # print(df.columns)
+                # print(station_id)
+                values = df[station_id].iloc[3:rows_qu].tolist()
+                if first_time is True:
+                    timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
+                    return_obj['timestamps'] = timestamps
+                    first_time = False
 
-            return_obj[model_single] = values
-            # print(values)
-            # print(timestamps)
+                return_obj[model_single] = values
+            except Exception as e:
+                continue
         return return_obj
     except Exception as e:
+        print("aqio el error 446")
         print("THE ERROR",e)
         # return_obj['error'] = f'{e}'
         return_obj['error'] = 'Probably the endpoind has changed'
@@ -525,26 +527,27 @@ def retrieve_models_helper_in(station_id, watershed_name):
     try:
         first_time = True
         for model_single in MODELS:
-            URL="http://sipif.indrhi.gob.do/hidro/mhh/"+ watershed_name +"/Arch/" + model_single+"_in" + ".csv"
-            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-            response = requests.get(URL, headers=headers)
-            file_object = io.StringIO(response.content.decode('utf-8'))
-            df = pd.read_csv(file_object, skiprows=[0,1]).reset_index(drop=True)
-            rows_qu = df.shape[0]
-            col_qu = df.shape[1]
-            # print(df.columns)
-            # if station_id in conversor_dict:
-            #     print("yeahjhhhh")
-            new_in_station_id = conversor_dict[station_id]
-            values = df[new_in_station_id].iloc[3:rows_qu].tolist()
-            if first_time is True:
-                timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
-                return_obj['timestamps'] = timestamps
-                first_time = False
-            return_obj[model_single] = values
-            # print(timestamps)
-        # print(df)
-        # print(return_obj)
+            try:
+                URL="http://sipif.indrhi.gob.do/hidro/mhh/"+ watershed_name +"/Arch/" + model_single+"_in" + ".csv"
+                print(URL)
+                headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+                response = requests.get(URL, headers=headers)
+                file_object = io.StringIO(response.content.decode('utf-8'))
+                df = pd.read_csv(file_object, skiprows=[0,1]).reset_index(drop=True)
+                rows_qu = df.shape[0]
+                col_qu = df.shape[1]
+                # print(df.columns)
+                # if station_id in conversor_dict:
+                #     print("yeahjhhhh")
+                new_in_station_id = conversor_dict[station_id]
+                values = df[new_in_station_id].iloc[3:rows_qu].tolist()
+                if first_time is True:
+                    timestamps = df["Nombre/ID:"].iloc[3:rows_qu].tolist()
+                    return_obj['timestamps'] = timestamps
+                    first_time = False
+                return_obj[model_single] = values
+            except Exception as e:
+                continue
         return return_obj
     except Exception as e:
         print("THE ERROR",e)

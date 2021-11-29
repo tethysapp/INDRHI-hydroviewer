@@ -109,7 +109,7 @@ function init_map() {
       crossOrigin: 'Anonymous',
     }),
 		opacity: 0
-		
+
   });
 
 
@@ -533,6 +533,7 @@ function get_monthlyAverages (comid) {
 };
 
 function removeInvalid(arrayTest){
+	console.log(arrayTest);
   let arrayResponse = [];
   arrayTest.forEach(function(x){
     if(x >= 0){
@@ -568,6 +569,8 @@ function stationData(idStation,commid){
       'commid':commid
     },
     success: function (result) {
+			console.log(result);
+
       if (!result.error) {
           console.log(result);
 
@@ -635,6 +638,7 @@ function stationData2(idStation,commid){
       'commid':commid
     },
     success: function (result) {
+			console.log(result);
       if (!result.error) {
           console.log(result);
 
@@ -704,33 +708,58 @@ function modelDataPlots(idStation){
           // $loading.addClass('hidden');
           $('#sgraph3').removeClass('hidden');
 
-          var prev1Trace = {
+					if(result.hasOwnProperty('FFGS-ARW')){
+						ffgs_arw = result['FFGS-ARW'];
+					}
+					else{
+						ffgs_arw= [];
+					}
+					if(result.hasOwnProperty('FFGS-NMMB')){
+						ffgs_nmmb = result['FFGS-NMMB'];
+					}
+					else{
+						ffgs_nmmb= [];
+					}
+					if(result.hasOwnProperty('Sispi-RAIN')){
+						sispi_rain = result['Sispi-RAIN'];
+					}
+					else{
+						sispi_rain = [];
+					}
+					if(result.hasOwnProperty('MF-AROME')){
+						mf_arome = result['MF-AROME'];
+					}
+					else{
+						mf_arome = [];
+					}
+
+          var ffgs_arw_obj = {
             x: formatDates(result['timestamps']),
-            y: removeInvalid(result['FFGS-ARW']),
+            y: removeInvalid(ffgs_arw),
             type: 'scatter',
             name:'FFGS-ARW'
           };
 
-          var prevATrace = {
+          var ffgs_nmmb_obj = {
             x: formatDates(result['timestamps']),
-            y: removeInvalid(result['FFGS-NMMB']),
+            y: removeInvalid(ffgs_nmmb),
             type: 'scatter',
             name:'FFGS-NMMB'
           };
-          var prevRTrace = {
+          var sispi_rain_obj = {
             x: formatDates(result['timestamps']),
-            y: removeInvalid(result['Sispi-RAIN']),
+            y: removeInvalid(sispi_rain),
             type: 'scatter',
             name:'Sispi-RAIN'
           };
-          var maxTrace = {
+          var mf_arome_obj = {
             x: formatDates(result['timestamps']),
-            y: removeInvalid(result['MF-AROME']),
+            y: removeInvalid(mf_arome),
             type: 'scatter',
             name:'MF-AROME'
           };
 
-          var data = [prev1Trace,prevATrace,prevRTrace,maxTrace];
+          var data = [ffgs_arw_obj,ffgs_nmmb_obj,sispi_rain_obj,mf_arome_obj];
           var config = {responsive: true}
           // Plotly.newPlot('uploadTab', data);
           Plotly.newPlot('sgraph3', data, config);
@@ -741,6 +770,8 @@ function modelDataPlots(idStation){
 
     },
     error:function(data){
+			$('#sloading3').addClass('hidden');
+
       console.log("problem");
       console.log(data)
     }
@@ -754,7 +785,6 @@ function modelDataPlotsIn(idStation){
     data:{
       'id':idStation,
     },
-
     success: function (result) {
 
       if (!result.error) {
@@ -764,34 +794,59 @@ function modelDataPlotsIn(idStation){
 
           // $loading.addClass('hidden');
           $('#sgraph4').removeClass('hidden');
+					if(result.hasOwnProperty('FFGS-ARW')){
+						ffgs_arw = result['FFGS-ARW'];
+					}
+					else{
+						ffgs_arw= [];
+					}
+					if(result.hasOwnProperty('FFGS-NMMB')){
+						ffgs_nmmb = result['FFGS-NMMB'];
+					}
+					else{
+						ffgs_nmmb= [];
+					}
+					if(result.hasOwnProperty('Sispi-RAIN')){
+						sispi_rain = result['Sispi-RAIN'];
+					}
+					else{
+						sispi_rain = [];
+					}
+					if(result.hasOwnProperty('MF-AROME')){
+						mf_arome = result['MF-AROME'];
+					}
+					else{
+						mf_arome = [];
+					}
 
-          var prev1Trace = {
+          var ffgs_arw_obj = {
             x: formatDates(result['timestamps']),
-            y: removeInvalid(result['FFGS-ARW']),
+            y: removeInvalid(ffgs_arw),
             type: 'scatter',
             name:'FFGS-ARW'
           };
 
-          var prevATrace = {
+          var ffgs_nmmb_obj = {
             x: formatDates(result['timestamps']),
-            y: removeInvalid(result['FFGS-NMMB']),
+            y: removeInvalid(ffgs_nmmb),
             type: 'scatter',
             name:'FFGS-NMMB'
           };
-          var prevRTrace = {
+          var sispi_rain_obj = {
             x: formatDates(result['timestamps']),
-            y: removeInvalid(result['Sispi-RAIN']),
+            y: removeInvalid(sispi_rain),
             type: 'scatter',
             name:'Sispi-RAIN'
           };
-          var maxTrace = {
+          var mf_arome_obj = {
             x: formatDates(result['timestamps']),
-            y: removeInvalid(result['MF-AROME']),
+            y: removeInvalid(mf_arome),
             type: 'scatter',
             name:'MF-AROME'
           };
 
-          var data = [prev1Trace,prevATrace,prevRTrace,maxTrace];
+					var data = [ffgs_arw_obj,ffgs_nmmb_obj,sispi_rain_obj,mf_arome_obj];
+
           var config = {responsive: true}
           // Plotly.newPlot('uploadTab', data);
           Plotly.newPlot('sgraph4', data, config);
@@ -804,6 +859,8 @@ function modelDataPlotsIn(idStation){
     error:function(data){
       console.log("problem");
       console.log(data)
+			$('#sloading4').addClass('hidden');
+
     }
   });
 }
@@ -843,7 +900,7 @@ function map_events() {
 				$('#fdc-loading').removeClass('hidden');
 				$("#station-info").empty()
 				$('#download_forecast').addClass('hidden');
-                $('#download_historical').addClass('hidden');
+        $('#download_historical').addClass('hidden');
 
 				$.ajax({
 					type: "GET",
