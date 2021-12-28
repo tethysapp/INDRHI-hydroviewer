@@ -13,40 +13,25 @@
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
 {% block app_navigation_items %}
-<br>
+<hr class="rounded">
 
-<h4><b>Control Panel</b></h4>
-<h7><b>MHH MOD OPERA</b></h7>
-<br>
-<br>
 <div class="blockFlex">
-<p class="titleblock"><b>Show Watersheds</b></p>
-  <input id="showMHHlayer" type="checkbox"  data-toggle="toggle" data-on="<span class='glyphicon glyphicon-eye-open'></span>" data-off="<span class='glyphicon glyphicon-eye-close'></span>" data-size="small" data-onstyle = "success"></input>
+  <h7><b>WATERSHEDS</b></h7>
 </div>
 
+<div class="blockFlex">
+<p class="titleblock"><b>Display Yaque del Norte Watersheds</b></p>
+  <input id="showMHHlayer" type="checkbox"  data-toggle="toggle" data-on="<span class='glyphicon glyphicon-eye-open'></span>" data-off="<span class='glyphicon glyphicon-eye-close'></span>" data-size="small" data-onstyle = "success"></input>
+</div>
 <p>Change Watershed Transparency</p>
 <input id="sliderWatershedMHH" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
 
-<div class="blockFlex">
-  <p class="titleblock"><b>Show Stations</b></p>
-  <input id="showStationMHHlayer" type="checkbox" checked data-toggle="toggle" data-on="<span class='glyphicon glyphicon-eye-open'></span>" data-off="<span class='glyphicon glyphicon-eye-close'></span>" data-size="small" data-onstyle = "success"></input>
-</div>
-
-<p>Change Stations Transparency</p>
-<input id="sliderStationsMHH" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
-
-<h7><b>Flash Flood Sytem (FFS)</b></h7>
-<br>
+<!-- <h7><b>Flash Flood Sytem (FFGS)</b></h7> -->
 <br>
 <div class="blockFlex">
-  <p class="titleblock"><b> Show FFS Watersheds</b></p>
+  <p class="titleblock"><b> Display FFGS Watersheds</b></p>
   <input id="ffs" type="checkbox"  data-toggle="toggle" data-on="<span class='glyphicon glyphicon-eye-closed'></span>" data-off="<span class='glyphicon glyphicon-eye-open'></span>" data-size="small" data-onstyle = "success"></input>
 </div>
-
-<p>Change FFS watersheds Transparency</p>
-<input id="sliderFSSWatersheds" type="range" min="0" max="1" step="0.1" value="1">
-<br>
-
 <div id="ffgs-legend" class="col-sm-12">
     <div>
         <svg width="20" height="20" viewPort="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -79,15 +64,32 @@
         No Data Available
     </div>
     <br>
+</div>
+<p>Change FFGS watersheds Transparency</p>
+<input id="sliderFSSWatersheds" type="range" min="0" max="1" step="0.1" value="1">
 
+<hr class="rounded">
+
+<div class="blockFlex">
+  <h7><b>STATIONS</b></h7>
 </div>
 
-<h7><b>GEOGloWS Data</b></h7>
-<br>
-<br>
+<div class="blockFlex">
+  <p class="titleblock"><b>Show Stations</b></p>
+  <input id="showStationMHHlayer" type="checkbox" checked data-toggle="toggle" data-on="<span class='glyphicon glyphicon-eye-open'></span>" data-off="<span class='glyphicon glyphicon-eye-close'></span>" data-size="small" data-onstyle = "success"></input>
+</div>
+
+<p>Change Stations Transparency</p>
+<input id="sliderStationsMHH" type="range" min="0" max="1" step="0.1" value="1" oninput="wmsLayerCatchment.setOpacity(this.value)">
+
+<hr class="rounded">
+
+<div class="blockFlex">
+  <h7><b>GEOGloWS DATA</b></h7>
+</div>
 <div class="blockFlex">
   <p class="titleblock"><b> Show Streams Layers</b></p>
-  <input id="geo" type="checkbox" checked data-toggle="toggle" data-on="<span class='glyphicon glyphicon-eye-open'></span>" data-off="<span class='glyphicon glyphicon-eye-closed'></span>" data-size="small" data-onstyle = "success"></input>
+  <input id="geo" type="checkbox" checked data-toggle="toggle" data-on="<span class='glyphicon glyphicon-eye-open'></span>" data-off="<span class='glyphicon glyphicon-eye-close'></span>" data-size="small" data-onstyle = "success"></input>
 </div>
 
 <p>Stream Transparency</p>
@@ -107,8 +109,10 @@
     <input id="stations_slider" class="hidden" type="range" min="0" max="1" step="0.1" value="1" oninput="StationsLayerVectorLayer.setOpacity(this.value)">
 </div>
 
+<hr class="rounded">
+
 <div id="map-view-legend" class="map-view-legend ol-unselectable ol-control">
-    <div id="wmslegend0" hidden>
+    <!-- <div id="wmslegend0" hidden>
         <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=AccRainEGE&amp;format=image/png&amp;STYLE=default" />
     </div>
     <div id="wmslegend1" hidden>
@@ -119,7 +123,7 @@
     </div>
     <div id="wmslegend3" hidden>
         <img src="http://128.187.106.130:80/glofas-proxy/glofas-ows-prod/?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=EGE_probRgt300&amp;format=image/png&amp;STYLE=default" />
-    </div>
+    </div> -->
 </div>
 
 
@@ -145,6 +149,11 @@
 {% block scripts %}
   {{ block.super }}
   {# Allows csrf verification with AJAX #}
+  <script>
+    let endpoint_geoserver = "{{ endpoint|safe }}";
+    let workspace_geoserver = "{{ workspace|safe }}"
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
   <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>

@@ -19,7 +19,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pprint
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from .app import IndrhiHydroviewer
+from .app import IndrhiHydroviewer as app
 import os
 from tethys_sdk.workspaces import app_workspace
 
@@ -30,8 +30,14 @@ def home(request):
     """
     Controller for the app home page.
     """
+    geoserver_endpoint = app.get_custom_setting('endpoint')
+    geoserver_workspace = app.get_custom_setting('workspace')
+
     # googleDriveCSV()
-    context = {}
+    context = {
+        "endpoint": geoserver_endpoint,
+        "workspace": geoserver_workspace,
+    }
 
     return render(request, 'indrhi_hydroviewer/home.html', context)
 

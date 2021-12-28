@@ -62,8 +62,10 @@ function init_map() {
 
 	var streams = new ol.layer.Image({
 		source: new ol.source.ImageWMS({
-			url: 'https://tethys2.byu.edu/geoserver/hydroviewer/wms',
+			url: `${endpoint_geoserver}/${workspace_geoserver}/wms`,
+			// url: 'https://tethys2.byu.edu/geoserver/hydroviewer/wms',
 			params: { 'LAYERS': 'hispaniola-geoglows-drainage_line' },
+			params: { 'LAYERS': 'hydroviewer:dominican_republic-geoglows-drainageline' },
 			serverType: 'geoserver',
 			crossOrigin: 'Anonymous'
 		}),
@@ -79,32 +81,18 @@ function init_map() {
 			opacity: 0
 	});
 
-	var major_rivers = new ol.layer.Image({
-  	source: new ol.source.ImageWMS({
-  		url: 'https://geoserver.hydroshare.org/geoserver/wms',
-  		params: { 'LAYERS': 'HS-cc1b93f1d65440aca895787118ed46f1:Jubba_and_Shabelle' },
-  		serverType: 'geoserver',
-  		crossOrigin: 'Anonymous'
-  	}),
-  	opacity: 1
-	});
 
-	var stations = new ol.layer.Image({
-		source: new ol.source.ImageWMS({
-			url: 'https://geoserver.hydroshare.org/geoserver/wms',
-			params: { 'LAYERS': 'HS-cc1b93f1d65440aca895787118ed46f1:SomoliaPoints' },
-			serverType: 'geoserver',
-			crossOrigin: 'Anonymous',
-		})
-	});
+
 
   // Add the resources of the layer display //
   //Model MOOD
 
   let watersheds_MOD = new ol.layer.Image({
     source: new ol.source.ImageWMS({
-      url: 'https://geoserver.hydroshare.org/geoserver/wms',
-      params: { 'LAYERS': 'HS-0a4ef3190ba14e04a09768eb91e2c23f:cuencas_r' },
+			url: `${endpoint_geoserver}/${workspace_geoserver}/wms`,
+      // url: 'https://geoserver.hydroshare.org/geoserver/wms',
+      // params: { 'LAYERS': 'HS-0a4ef3190ba14e04a09768eb91e2c23f:cuencas_r' },
+      params: { 'LAYERS': 'hydroviewer:cuencas_r' },
       serverType: 'geoserver',
       crossOrigin: 'Anonymous',
     }),
@@ -115,7 +103,8 @@ function init_map() {
 
   let nod_Q = new ol.layer.Image({
     source: new ol.source.ImageWMS({
-      url: 'https://geoserver.hydroshare.org/geoserver/wms',
+      // url: 'https://geoserver.hydroshare.org/geoserver/wms',
+			url: `${endpoint_geoserver}/${workspace_geoserver}/wms`,
       params: { 'LAYERS': 'HS-0a4ef3190ba14e04a09768eb91e2c23f:NOD_1_CA' },
       serverType: 'geoserver',
       crossOrigin: 'Anonymous',
@@ -133,7 +122,8 @@ function init_map() {
 
 	map = new ol.Map({
 		target: 'map',
-		layers: [base_layer, streams, stations,wmsLayerCatchment, watersheds_MOD, nod_Q],
+		// layers: [base_layer, streams, stations,wmsLayerCatchment, watersheds_MOD, nod_Q],
+		layers: [base_layer, streams, watersheds_MOD, nod_Q],
 		// layers: [base_layer, stations, wmsLayerCatchment, watersheds_MOD,nod_Q],
 		view: new ol.View({
 			center: ol.proj.fromLonLat([-70.789505, 19.042818]),
@@ -147,7 +137,7 @@ function init_map() {
 function modSwitchWatershedMHH(){
   let actual_state=$(this).prop('checked');
   if(actual_state){
-    layerDict['watersheds_MHH'].setOpacity(1);
+    layerDict['watersheds_MHH'].setOpacity(0.7);
 
   }
   else{

@@ -1,4 +1,5 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
+from tethys_sdk.app_settings import CustomSetting
 
 
 class IndrhiHydroviewer(TethysAppBase):
@@ -81,3 +82,18 @@ class IndrhiHydroviewer(TethysAppBase):
         )
 
         return url_maps
+    def custom_settings(self):
+        return (
+            CustomSetting(
+                name='endpoint',
+                type=CustomSetting.TYPE_STRING,
+                description='Endpoint for the Geoserver service',
+                required=True,
+            ),
+            CustomSetting(
+                name='workspace',
+                type=CustomSetting.TYPE_STRING,
+                description='Workspace within Geoserver where web service is',
+                required=True,
+            ),
+        )
