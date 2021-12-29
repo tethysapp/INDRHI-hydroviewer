@@ -70,10 +70,12 @@ function init_map() {
 			crossOrigin: 'Anonymous'
 		}),
 	});
-	var layerNameCatchment = 'ffgs:ffgs_hispaniola'
+	// var layerNameCatchment = 'ffgs:ffgs_hispaniola'
+	var layerNameCatchment = 'hydroviewer:ffgs_hispaniola';
 	var wmsLayerCatchment = new ol.layer.Tile({
 			source: new ol.source.TileWMS({
-					url: 'https://tethys2.byu.edu/geoserver/wms',
+					// url: 'https://tethys2.byu.edu/geoserver/wms',
+					url: `${endpoint_geoserver}/wms`,
 					params: { 'LAYERS': layerNameCatchment },
 					serverType: 'geoserver',
 					crossOrigin: 'Anonymous'
@@ -123,7 +125,7 @@ function init_map() {
 	map = new ol.Map({
 		target: 'map',
 		// layers: [base_layer, streams, stations,wmsLayerCatchment, watersheds_MOD, nod_Q],
-		layers: [base_layer, streams, watersheds_MOD, nod_Q],
+		layers: [base_layer, streams, watersheds_MOD, nod_Q,wmsLayerCatchment],
 		// layers: [base_layer, stations, wmsLayerCatchment, watersheds_MOD,nod_Q],
 		view: new ol.View({
 			center: ol.proj.fromLonLat([-70.789505, 19.042818]),
